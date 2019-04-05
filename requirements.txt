@@ -1,7 +1,7 @@
 # This file may be used to create an environment using:
 # $ conda create --name <env> --file <this file>
 # platform: linux-64
-anaconda=custom=py36hbbc8b67_0
+# anaconda=custom=py36hbbc8b67_0
 appdirs=1.4.3=pypi_0
 aspy-yaml=1.2.0=pypi_0
 attrs=19.1.0=pypi_0
