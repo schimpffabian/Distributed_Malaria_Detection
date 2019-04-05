@@ -34,7 +34,7 @@ def initialize_model(model_name, num_classes, feature_extract, use_pretrained=Tr
         model_ft = models.alexnet(pretrained=use_pretrained)
         set_parameter_requires_grad(model_ft, feature_extract)
         num_ftrs = model_ft.classifier[6].in_features
-        model_ft.classifier[6] = nn.Linear(num_ftrs,num_classes)
+        model_ft.classifier[6] = nn.Linear(num_ftrs, num_classes)
         input_size = 224
 
     elif model_name == "vgg":
@@ -43,7 +43,7 @@ def initialize_model(model_name, num_classes, feature_extract, use_pretrained=Tr
         model_ft = models.vgg11_bn(pretrained=use_pretrained)
         set_parameter_requires_grad(model_ft, feature_extract)
         num_ftrs = model_ft.classifier[6].in_features
-        model_ft.classifier[6] = nn.Linear(num_ftrs,num_classes)
+        model_ft.classifier[6] = nn.Linear(num_ftrs, num_classes)
         input_size = 224
 
     elif model_name == "squeezenet":
@@ -51,7 +51,9 @@ def initialize_model(model_name, num_classes, feature_extract, use_pretrained=Tr
         """
         model_ft = models.squeezenet1_0(pretrained=use_pretrained)
         set_parameter_requires_grad(model_ft, feature_extract)
-        model_ft.classifier[1] = nn.Conv2d(512, num_classes, kernel_size=(1,1), stride=(1,1))
+        model_ft.classifier[1] = nn.Conv2d(
+            512, num_classes, kernel_size=(1, 1), stride=(1, 1)
+        )
         model_ft.num_classes = num_classes
         input_size = 224
 
@@ -75,7 +77,7 @@ def initialize_model(model_name, num_classes, feature_extract, use_pretrained=Tr
         model_ft.AuxLogits.fc = nn.Linear(num_ftrs, num_classes)
         # Handle the primary net
         num_ftrs = model_ft.fc.in_features
-        model_ft.fc = nn.Linear(num_ftrs,num_classes)
+        model_ft.fc = nn.Linear(num_ftrs, num_classes)
         input_size = 299
 
     else:
@@ -95,9 +97,15 @@ def train(model, device, train_loader, optimizer, epoch, loss):
         output.backward()
         optimizer.step()
         if batch_idx % log_interval == 0:
-            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                epoch, batch_idx * len(data), len(train_loader.dataset),
-                       100. * batch_idx / len(train_loader), output.item()))
+            print(
+                "Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}".format(
+                    epoch,
+                    batch_idx * len(data),
+                    len(train_loader.dataset),
+                    100.0 * batch_idx / len(train_loader),
+                    output.item(),
+                )
+            )
 
 
 def run_t(model, device, test_loader, loss):
@@ -109,13 +117,18 @@ def run_t(model, device, test_loader, loss):
             data, target = data.to(device), target.to(device)
             prediction = model(data)
             test_loss += loss(prediction, target)
-            pred = prediction.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
+            pred = prediction.argmax(
+                dim=1, keepdim=True
+            )  # get the index of the max log-probability
             correct += pred.eq(target.view_as(pred)).sum().item()
 
     test_loss /= len(test_loader.dataset)
 
-    print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
-        test_loss, correct, len(test_loader.dataset),
-        100. * correct / len(test_loader.dataset)))
-
-
+    print(
+        "\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n".format(
+            test_loss,
+            correct,
+            len(test_loader.dataset),
+            100.0 * correct / len(test_loader.dataset),
+        )
+    )

@@ -3,7 +3,9 @@ import torch.nn.functional as F
 from numpy import floor
 
 
-def output_shape(c_in, c_out, kernel_size, stride=1, padding=0, dilation=1, n=1, h_in=1, w_in=1):
+def output_shape(
+    c_in, c_out, kernel_size, stride=1, padding=0, dilation=1, n=1, h_in=1, w_in=1
+):
     """
 
     :param C_in:
@@ -29,8 +31,14 @@ def output_shape(c_in, c_out, kernel_size, stride=1, padding=0, dilation=1, n=1,
     if not hasattr(dilation, "__len__"):
         dilation = (dilation, dilation)
 
-    h_out = floor((h_in +2 * padding[0] - dilation[0] * (kernel_size[0] - 1) - 1) / (stride[0]) + 1)
-    w_out = floor((w_in + 2 * padding[1] - dilation[1] * (kernel_size[1] - 1) - 1) / (stride[1]) + 1)
+    h_out = floor(
+        (h_in + 2 * padding[0] - dilation[0] * (kernel_size[0] - 1) - 1) / (stride[0])
+        + 1
+    )
+    w_out = floor(
+        (w_in + 2 * padding[1] - dilation[1] * (kernel_size[1] - 1) - 1) / (stride[1])
+        + 1
+    )
 
     return n, c_out, h_out, w_out
 

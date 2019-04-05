@@ -60,10 +60,10 @@ def get_cell_image(x, y, r, img):
 
     # grayscale
     if len(img_shape) == 2:
-        return img[x_start: x_end, y_start: y_end]
+        return img[x_start:x_end, y_start:y_end]
     # RGB, HSV etc
     if len(img_shape) == 3:
-        return img[x_start: x_end, y_start: y_end, :]
+        return img[x_start:x_end, y_start:y_end, :]
 
 
 def create_blob_sequence(image):
@@ -78,9 +78,12 @@ def create_blob_sequence(image):
     blobs_doh = blob_doh(image, min_sigma=5, max_sigma=40, overlap=1)
 
     blobs_list = [blobs_log, blobs_dog, blobs_doh]
-    colors = ['yellow', 'lime', 'green']
-    titles = ['Laplacian of Gaussian', 'Difference of Gaussian',
-              'Determinant of Hessian']
+    colors = ["yellow", "lime", "green"]
+    titles = [
+        "Laplacian of Gaussian",
+        "Difference of Gaussian",
+        "Determinant of Hessian",
+    ]
     sequence = zip(blobs_list, colors, titles)
 
     return sequence
@@ -110,7 +113,7 @@ def main():
     model = load_model(path="./models/custom_cnn_e10_size_48.pt")
 
     for image in images:
-        #image = "malaria_0.jpg"
+        # image = "malaria_0.jpg"
         img = imread(path + image)
         image_gray = rgb2gray(img)
         image_gray = image_gray.squeeze()
@@ -125,7 +128,7 @@ def main():
 
         for idx, (blobs, color, title) in enumerate(sequence):
             ax[idx].set_title(title)
-            ax[idx].imshow(image_gray_inverse, interpolation='nearest')
+            ax[idx].imshow(image_gray_inverse, interpolation="nearest")
             for blob in blobs:
                 y, x, r = blob
                 cell_img = get_cell_image(x, y, r, img)

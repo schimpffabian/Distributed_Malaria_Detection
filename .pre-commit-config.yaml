@@ -1,0 +1,4 @@
+ - repo: https://github.com/2fasc/Distributed_Malaria/
+    hooks:
+    - id: black
+      language_version: python3.6
