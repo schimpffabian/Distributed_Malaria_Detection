@@ -1,2 +1,3 @@
 data/
 .pytest_cache/
+.idea/
