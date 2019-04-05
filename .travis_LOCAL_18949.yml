@@ -16,4 +16,4 @@ notifications:
     recipients:
       - schimpfabian@gmail.com
     on_success: never # default: change
-    on_failure: always # default: always
+on_failure: always # default: always
