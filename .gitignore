@@ -1,3 +1,4 @@
 data/
 .pytest_cache/
 .idea/
+__pycache__
