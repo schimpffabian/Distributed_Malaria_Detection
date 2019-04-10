@@ -7,18 +7,10 @@ from skimage.feature import blob_dog, blob_log, blob_doh
 from math import sqrt
 from skimage.transform import resize
 from src.models.Custom_CNN import Simple_CNN
+from src.auxiliaries import get_images, rgb2gray
 import torch
 
 IMG_SIZE = 48
-
-
-def get_images(path):
-    return [f for f in listdir(path) if isfile(join(path, f))]
-
-
-def rgb2gray(rgb):
-    transform_factor = np.array([0.2989, 0.5870, 0.1140]).reshape((3, 1))
-    return rgb @ transform_factor
 
 
 def get_cell_image(x, y, r, img):

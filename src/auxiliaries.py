@@ -1,12 +1,15 @@
 import torch
 import torch.nn as nn
 from torchvision import models
+from os import listdir
+from os.path import isfile, join
+import numpy as np
 
 log_interval = 10
 
 
 def set_parameter_requires_grad(model, feature_extracting):
-    #  Source: https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.html
+    #  Source: https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.htmlS
     if feature_extracting:
         for param in model.parameters():
             param.requires_grad = False
@@ -132,3 +135,12 @@ def run_t(model, device, test_loader, loss):
             100.0 * correct / len(test_loader.dataset),
         )
     )
+
+
+def get_images(path):
+    return [f for f in listdir(path) if isfile(join(path, f))]
+
+
+def rgb2gray(rgb):
+    transform_factor = np.array([0.2989, 0.5870, 0.1140]).reshape((3, 1))
+    return rgb @ transform_factor

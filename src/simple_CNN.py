@@ -13,7 +13,7 @@ def finetune_model():
     model_name = "squeezenet"  # squeezenet, "resnet"
     num_classes = 2
     batch_size = 64
-    num_epochs = 10
+    num_epochs = 42
     feature_extract = True
 
     model_ft, input_size = initialize_model(

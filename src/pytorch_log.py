@@ -3,16 +3,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 from matplotlib.image import imread
 import matplotlib.pyplot as plt
-from os import listdir
-from os.path import isfile, join
+from src.auxiliaries import get_images, rgb2gray
 import numpy as np
-from math import sqrt, ceil
-
-
-def preprocessing():
-    # Test if image is grayscale
-
-    pass
+from math import sqrt, ceil, floor
+from skimage.feature import blob_log
+import timeit
 
 
 def log_kernel(
@@ -29,7 +24,7 @@ def log_kernel(
         NotImplementedError(
             "Please choose between: \nlinear scaling \t-> \t True \nlog scaling \t-> \t False"
         )
-    print(sigma_vec)
+    #print(sigma_vec)
     x_vec = np.arange(kernel_size) - np.floor(kernel_size / 2)
     y_vec = np.arange(kernel_size) - np.floor(kernel_size / 2)
 
@@ -56,27 +51,32 @@ def log_kernel(
     for sigma_idx, sigma in enumerate(sigma_vec):
         # kernel[sigma_idx, :, :] = kernel[sigma_idx, :, :] / kernel_sum[sigma_idx] #* -1
         kernel[sigma_idx, :, :] = kernel[sigma_idx, :, :] * sigma ** 2
-        print(kernel[sigma_idx, :, :].sum())
+        #print(kernel[sigma_idx, :, :].sum())
 
     return kernel.tolist(), sigma_vec
 
 
-def log(img,):
-    num_filters = 1
-    sigma_start = 3
-    sigma_end = 3
-    kernel_size = 4 * sigma_end + 1  # 2*ceil(3*sigma_end)+1
+def log(img, min_sigma=5, max_sigma=5, num_sigma=1, exclude_borders=True):
+    num_filters = num_sigma
+    sigma_start = min_sigma
+    sigma_end = max_sigma
+
+    kernel_size = sigma_end + 1  # 2*ceil(3*sigma_end)+1
+    safe_dist = floor(kernel_size / 2)
     padding = int(np.floor(kernel_size / 2))
     neighborhood_size = kernel_size
     neighborhood_padding = int(np.floor(neighborhood_size / 2))
 
     x = torch.tensor(img)  # torch.rand(1, 1, 64, 64)
+    noise = torch.rand(x.shape).double()
+    x = x + noise
 
     while len(x.shape) < 4:
         x = x.unsqueeze(0)
 
     kernel, sigma_vec = log_kernel(kernel_size, sigma_start, sigma_end, num_filters)
 
+    start_pt = timeit.default_timer()
     gauss_kernel = torch.Tensor(kernel).unsqueeze(1).double()
     x_gauss = F.conv2d(x, gauss_kernel, padding=padding)
 
@@ -85,55 +85,44 @@ def log(img,):
         kernel_size=neighborhood_size, stride=1, padding=neighborhood_padding
     )
     x_max = maxpooling(x_gauss)
-    x_min = maxpooling(x_gauss * -1)
-
-    avg_pooling = torch.nn.AvgPool2d(
-        kernel_size=neighborhood_size, stride=1, padding=neighborhood_padding
-    )
-    x_avg = avg_pooling(x_gauss)
-
-    x_gauss_np = torch.squeeze(x_gauss).data.numpy()
 
     x_gauss = torch.squeeze(x_gauss).data.numpy()
     x_max = torch.squeeze(x_max).data.numpy()
-    x_avg = torch.squeeze(x_avg).data.numpy()
-    x_min = torch.squeeze(x_min).data.numpy()
-
     maxima = (x_gauss == x_max) * 1
-    minima = (x_gauss == x_min) * 3
-
-    real_maxima = maxima + minima
-
-    plt.figure(0)
-    fig0, axes0 = plt.subplots(1, 4, figsize=(3, 3))
-    ax0 = axes0.ravel()
-    ax0[0].imshow(img)
-    ax0[1].imshow(x_gauss_np)
-    ax0[2].imshow(x_max)
-    ax0[3].imshow(x_min)
 
     if num_filters > 1:
-        sigma_idx, x, y = np.where(real_maxima == 1)
-        print(sigma_idx)
+        sigma_idx, x, y = np.where(maxima == 1)
+        #print(sigma_idx)
         sigma = [sigma_vec[i] for i in sigma_idx]
     elif num_filters == 1:
-        x, y = np.where(real_maxima == 1)
+        x, y = np.where(maxima == 1)
         sigma = [sigma_vec[0] for i in range(len(x))]
 
-    return x, y, sigma
+    x_val = []
+    y_val = []
+    sigma_val = []
 
+    if exclude_borders:
+        for ii in range(len(x)):
+            x_i = x[ii]
+            if safe_dist < x_i < img.shape[0] - safe_dist:
+                y_i = y[ii]
+                if safe_dist < y_i < img.shape[1] - safe_dist:
+                    sigma_i = sigma[ii]
+                    x_val.append(x_i)
+                    y_val.append(y_i)
+                    sigma_val.append(sigma_i)
 
-def get_images(path):
-    return [f for f in listdir(path) if isfile(join(path, f))]
+    else:
+        x_val = x
+        y_val = y
+        sigma_val = sigma
 
-
-def rgb2gray(rgb):
-    transform_factor = np.array([0.2989, 0.5870, 0.1140]).reshape((3, 1))
-    return rgb @ transform_factor
+    return x_val, y_val, sigma_val, safe_dist, start_pt
 
 
 # https://discuss.pytorch.org/t/changing-the-weights-of-conv2d/22992/14
-if __name__ == "__main__":
+def benchmark_log():
     path = "../data/Real_Application/"
     images = get_images(path)
     # for image in images:
@@ -146,39 +135,69 @@ if __name__ == "__main__":
     # image_gray_inverse[0:-1, 0:-1] = 150
     # image_gray_inverse[45:90, 150:200] = 0
 
-    # create_test_image
-    test_img = np.zeros([200, 200])
+    num_runs = 1
+    time_pt_log = 0
+    time_sk_log = 0
 
-    center = np.array([int(test_img.shape[0] / 2), int(test_img.shape[1] / 2)])
-    radius = 5
+    for ii in range(num_runs):
+        # create_test_image
+        test_img = np.zeros([200, 200])
 
-    for ii in range(test_img.shape[1]):
-        for jj in range(test_img.shape[0]):
-            if np.linalg.norm(np.array([ii, jj]) - center) < radius:
-                test_img[ii, jj] = 255
+        num_points = 100
+
+        for ii in range(num_points):
+            if ii == 0:
+                center = np.array([int(test_img.shape[0] / 2), int(test_img.shape[1] / 2)])
+                radius = 5
             else:
-                test_img[ii, jj] = 0
-    image_gray_inverse = test_img
+                center = np.random.randint(low=0, high=int(test_img.shape[0]), size=(1, 2))
+                radius = np.random.randint(low=1, high=10)
 
-    plt.figure(1)
-    fig, axes = plt.subplots(2, 1, figsize=(3, 3))
-    ax = axes.ravel()
-    ax[0].imshow(image_gray_inverse)
-    ax[1].imshow(image_gray_inverse)
+            for ii in range(test_img.shape[0]):
+                for jj in range(test_img.shape[1]):
+                    if np.linalg.norm(np.array([ii, jj]) - center) < radius:
+                        test_img[ii, jj] = 255
 
-    x, y, sigma = log(image_gray_inverse)
-    r = np.array(sigma) * sqrt(2)
+        fig, axes = plt.subplots(3, 1, figsize=(3, 3))
+        ax = axes.ravel()
+        ax[0].imshow(test_img)
+        ax[1].imshow(test_img)
+        ax[2].imshow(test_img)
 
-    for ii in range(len(x)):
-        x_i = x[ii]
-        y_i = y[ii]
-        r_i = r[ii]
-        print(r_i)
-        c = plt.Circle((y_i, x_i), r_i, color="r", linewidth=2, fill=False)
-        ax[1].add_patch(c)
+        x, y, sigma, safe_dist, start_pt = log(test_img, min_sigma=1, max_sigma=10, num_sigma=10, exclude_borders=False)
+        end_pt = timeit.default_timer()
+        r = np.array(sigma) * sqrt(2)
+        time_pt_log += (end_pt - start_pt)
 
-    plt.show()
+        start_sk = timeit.default_timer()
+        blobs_log = blob_log(test_img, min_sigma=1, max_sigma=10, num_sigma=10)
+        end_sk = timeit.default_timer()
+        x_sk = blobs_log[:, 0]
+        y_sk = blobs_log[:, 1]
+        r_sk = blobs_log[:, 2] * sqrt(2) * sqrt(2)
+        time_sk_log += (end_sk - start_sk)
 
+        for ii in range(len(x)):
+            x_i = x[ii]
+            y_i = y[ii]
+            r_i = r[ii]
+            c = plt.Circle((y_i, x_i), r_i, color="r", linewidth=2, fill=False)
+            ax[1].add_patch(c)
+
+        for ii in range(len(x_sk)):
+            x_i = x_sk[ii]
+            y_i = y_sk[ii]
+            r_i = r_sk[ii]
+            c = plt.Circle((y_i, x_i), r_i, color="r", linewidth=2, fill=False)
+            ax[2].add_patch(c)
+        plt.show()
+
+    print("Total time for sklearn log: ", time_sk_log/num_runs)
+    print("Total time for PyTorch log: ", time_pt_log/num_runs)
+
+
+if __name__ == "__main__":
+    benchmark_log()
 
 """
     from scipy.ndimage import gaussian_laplace
