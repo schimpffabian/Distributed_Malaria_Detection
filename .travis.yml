@@ -4,7 +4,7 @@ python:
 
 # command to install dependencies
 #install:
-  - pip install --progress-bar off -r requirements.txt
+  - pip install --no-progress --progress-bar off -r requirements.txt
 
 # command to run tests
 #script:
