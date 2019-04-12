@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="67246550-80d4-4917-9d25-5be8dbb70020" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/tests/test_dataloader.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_dataloader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_pytorch_log.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_pytorch_log.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_simple_CNN.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_simple_CNN.py" afterDir="false" />
-    </list>
+    <list default="true" id="67246550-80d4-4917-9d25-5be8dbb70020" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -324,12 +320,12 @@
       <workItem from="1554892142882" duration="9000" />
       <workItem from="1554892191469" duration="1963000" />
       <workItem from="1554967628262" duration="14771000" />
-      <workItem from="1555056764809" duration="6179000" />
+      <workItem from="1555056764809" duration="6814000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="22922000" />
+    <option name="totallyTimeSpent" value="23557000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1600" y="27" width="2560" height="1413" extended-state="6" />
