@@ -90,16 +90,22 @@ def initialize_model(model_name, num_classes, feature_extract, use_pretrained=Tr
     return model_ft, input_size
 
 
-def train(model, device, train_loader, optimizer, epoch, loss):
+def train(model, device, train_loader, optimizer, epoch, loss, federated=False):
     model.train()
     for batch_idx, (data, target) in enumerate(train_loader):
+        if federated:
+            model.send(data.location)
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad()
         prediction = model(data)
         output = loss(prediction, target)
         output.backward()
         optimizer.step()
+        if federated:
+            model.get()
         if batch_idx % log_interval == 0:
+            if federated:
+                output = output.get()
             print(
                 "Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}".format(
                     epoch,

@@ -2,7 +2,7 @@ from torchtest import assert_vars_change
 from torchtest import test_suite
 import sys
 import os
-sys.path.append(os.path.abspath('../'))
+sys.path.append(os.path.abspath('../src/'))
 
 import pytest
 from src.dataloader import create_dataloaders

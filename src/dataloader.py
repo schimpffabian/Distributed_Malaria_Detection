@@ -79,6 +79,30 @@ def resample(target_list, imbal_class_prop):
     return idxs
 
 
+def create_dataset(path, data_augmentation):
+    dataset = ImageFolder(root=path, transform=data_augmentation)
+    return dataset
+
+
+def split_dataset(dataset, percentage_of_dataset):
+    size_set = []
+    for ii in range(len(percentage_of_dataset) - 1):
+        size_set.append(int(percentage_of_dataset[ii] * len(dataset)))
+    size_set.append(int(len(dataset) - np.array(size_set).sum()))
+    split_datasets = torch.utils.data.random_split(dataset, size_set)
+    return split_datasets
+
+
+def set_prop_dataset(datasets, targets, balance):
+    new_datasets = []
+    for ii, dataset in enumerate(datasets):
+        dataset_targets = [targets[ii] for ii in dataset.indices]
+        idx = resample(dataset_targets, balance[ii])
+        dataset.indices = list(dataset.indices[idx])
+        new_datasets.append(dataset)
+    return new_datasets
+
+
 def create_dataloaders(
     batchsize=28,
     img_size=28,
@@ -91,24 +115,19 @@ def create_dataloaders(
     data_augmentation = get_data_augmentation(random_background, img_size)
 
     # Load all data, create dataset
-    dataset = ImageFolder(root=path, transform=data_augmentation)
+    dataset = create_dataset(path, data_augmentation)
     targets = dataset.targets
 
     # Split dataset into training, test and validation set
     # This is pretty clumsy but due to backward compatibility of PyTorch https://github.com/pytorch/pytorch/pull/12068
+    split_datasets = split_dataset(dataset, percentage_of_dataset)
 
-    size_set = []
-    for ii in range(len(percentage_of_dataset) - 1):
-        size_set.append(int(percentage_of_dataset[ii] * len(dataset)))
-    size_set.append(int(len(dataset) - np.array(size_set).sum()))
-    split_datasets = torch.utils.data.random_split(dataset, size_set)
+    # Set probability of targets in each dataset
+    split_datasets = set_prop_dataset(split_datasets, targets, balance)
 
     # Create dataloaders and set probability of classes in each dataset
     dataloaders = []
     for ii, dataset in enumerate(split_datasets):
-        dataset_targets = [targets[ii] for ii in dataset.indices]
-        idx = resample(dataset_targets, balance[ii])
-        dataset.indices = list(dataset.indices[idx])
         dataloaders.append(
             torch.utils.data.DataLoader(
                 dataset=dataset,

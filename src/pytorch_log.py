@@ -24,7 +24,7 @@ def log_kernel(
         NotImplementedError(
             "Please choose between: \nlinear scaling \t-> \t True \nlog scaling \t-> \t False"
         )
-    #print(sigma_vec)
+    # print(sigma_vec)
     x_vec = np.arange(kernel_size) - np.floor(kernel_size / 2)
     y_vec = np.arange(kernel_size) - np.floor(kernel_size / 2)
 
@@ -51,7 +51,7 @@ def log_kernel(
     for sigma_idx, sigma in enumerate(sigma_vec):
         # kernel[sigma_idx, :, :] = kernel[sigma_idx, :, :] / kernel_sum[sigma_idx] #* -1
         kernel[sigma_idx, :, :] = kernel[sigma_idx, :, :] * sigma ** 2
-        #print(kernel[sigma_idx, :, :].sum())
+        # print(kernel[sigma_idx, :, :].sum())
 
     return kernel.tolist(), sigma_vec
 
@@ -92,7 +92,7 @@ def log(img, min_sigma=5, max_sigma=5, num_sigma=1, exclude_borders=True):
 
     if num_filters > 1:
         sigma_idx, x, y = np.where(maxima == 1)
-        #print(sigma_idx)
+        # print(sigma_idx)
         sigma = [sigma_vec[i] for i in sigma_idx]
     elif num_filters == 1:
         x, y = np.where(maxima == 1)
@@ -147,10 +147,14 @@ def benchmark_log():
 
         for ii in range(num_points):
             if ii == 0:
-                center = np.array([int(test_img.shape[0] / 2), int(test_img.shape[1] / 2)])
+                center = np.array(
+                    [int(test_img.shape[0] / 2), int(test_img.shape[1] / 2)]
+                )
                 radius = 5
             else:
-                center = np.random.randint(low=0, high=int(test_img.shape[0]), size=(1, 2))
+                center = np.random.randint(
+                    low=0, high=int(test_img.shape[0]), size=(1, 2)
+                )
                 radius = np.random.randint(low=1, high=10)
 
             for ii in range(test_img.shape[0]):
@@ -164,10 +168,12 @@ def benchmark_log():
         ax[1].imshow(test_img)
         ax[2].imshow(test_img)
 
-        x, y, sigma, safe_dist, start_pt = log(test_img, min_sigma=1, max_sigma=10, num_sigma=10, exclude_borders=False)
+        x, y, sigma, safe_dist, start_pt = log(
+            test_img, min_sigma=1, max_sigma=10, num_sigma=10, exclude_borders=False
+        )
         end_pt = timeit.default_timer()
         r = np.array(sigma) * sqrt(2)
-        time_pt_log += (end_pt - start_pt)
+        time_pt_log += end_pt - start_pt
 
         start_sk = timeit.default_timer()
         blobs_log = blob_log(test_img, min_sigma=1, max_sigma=10, num_sigma=10)
@@ -175,7 +181,7 @@ def benchmark_log():
         x_sk = blobs_log[:, 0]
         y_sk = blobs_log[:, 1]
         r_sk = blobs_log[:, 2] * sqrt(2) * sqrt(2)
-        time_sk_log += (end_sk - start_sk)
+        time_sk_log += end_sk - start_sk
 
         for ii in range(len(x)):
             x_i = x[ii]
@@ -192,8 +198,8 @@ def benchmark_log():
             ax[2].add_patch(c)
         plt.show()
 
-    print("Total time for sklearn log: ", time_sk_log/num_runs)
-    print("Total time for PyTorch log: ", time_pt_log/num_runs)
+    print("Total time for sklearn log: ", time_sk_log / num_runs)
+    print("Total time for PyTorch log: ", time_pt_log / num_runs)
 
 
 if __name__ == "__main__":
