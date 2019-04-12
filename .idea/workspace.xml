@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="67246550-80d4-4917-9d25-5be8dbb70020" name="Default Changelist" comment="" />
+    <list default="true" id="67246550-80d4-4917-9d25-5be8dbb70020" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/tests/test_simple_CNN.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_simple_CNN.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -11,87 +13,21 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../marl_thesis/MARL/src/environment/env_class_multiprocessing.py">
+        <entry file="file://$PROJECT_DIR$/tests/test_pytorch_log.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="11145">
-              <caret line="743" column="71" lean-forward="true" selection-start-line="743" selection-start-column="71" selection-end-line="743" selection-end-column="71" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/pytorch_lime.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="4" lean-forward="true" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="74" />
-              <folding>
-                <element signature="e#0#48#0" expanded="true" />
-              </folding>
+            <state>
+              <caret column="14" lean-forward="true" selection-start-column="14" selection-end-column="14" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/tests/test_pytorch_log.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="35" selection-start-line="2" selection-start-column="35" selection-end-line="2" selection-end-column="35" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/test_dataloader.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" selection-start-line="3" selection-end-line="3" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/test_simple_CNN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" selection-start-line="4" selection-end-line="5" selection-end-column="35" />
+            <state relative-caret-position="300">
+              <caret line="20" selection-start-line="20" selection-end-line="20" />
               <folding>
                 <element signature="e#0#40#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/.travis.yml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" column="8" selection-start-line="11" selection-start-column="8" selection-end-line="11" selection-end-column="8" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../marl_thesis/MARL/src/environment/population_class.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1172">
-              <caret line="75" column="16" lean-forward="true" selection-start-line="75" selection-start-column="16" selection-end-line="75" selection-end-column="16" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../marl_thesis/MARL/src/environment/actor_critic_pytorch.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="133">
-              <caret line="167" column="9" lean-forward="true" selection-start-line="167" selection-start-column="9" selection-end-line="167" selection-end-column="9" />
-              <folding>
-                <element signature="e#0#12#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -125,9 +61,9 @@
         <option value="$PROJECT_DIR$/../marl_thesis/MARL/src/environment/env_class_multiprocessing.py" />
         <option value="$PROJECT_DIR$/../marl_thesis/MARL/src/environment/actor_critic_pytorch.py" />
         <option value="$PROJECT_DIR$/.travis.yml" />
-        <option value="$PROJECT_DIR$/tests/test_simple_CNN.py" />
         <option value="$PROJECT_DIR$/tests/test_pytorch_log.py" />
         <option value="$PROJECT_DIR$/tests/test_dataloader.py" />
+        <option value="$PROJECT_DIR$/tests/test_simple_CNN.py" />
       </list>
     </option>
   </component>
@@ -153,7 +89,27 @@
             <path>
               <item name="Distributed_Malaria" type="b2602c69:ProjectViewProjectNode" />
               <item name="Distributed_Malaria" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Distributed_Malaria" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Distributed_Malaria" type="462c0819:PsiDirectoryNode" />
               <item name="tests" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Distributed_Malaria" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MARL" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Distributed_Malaria" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MARL" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Distributed_Malaria" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MARL" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="environment" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -186,7 +142,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.0_Single_Agent">
+  <component name="RunManager" selected="Python.test_simple_CNN">
     <configuration name="0_Single_Agent" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="MARL" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -253,28 +209,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="parallel_coordinate_plot" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="MARL" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../marl_thesis/MARL/src/03_analysis" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../marl_thesis/MARL/src/03_analysis/parallel_coordinate_plot.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="simple_CNN" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Distributed_Malaria" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -297,13 +231,35 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="test_simple_CNN" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Distributed_Malaria" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_simple_CNN.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.test_simple_CNN" />
         <item itemvalue="Python.0_Single_Agent" />
         <item itemvalue="Python.federated_training" />
         <item itemvalue="Python.simple_CNN" />
         <item itemvalue="Python.dataloader" />
-        <item itemvalue="Python.parallel_coordinate_plot" />
       </list>
     </recent_temporary>
   </component>
@@ -320,23 +276,23 @@
       <workItem from="1554892142882" duration="9000" />
       <workItem from="1554892191469" duration="1963000" />
       <workItem from="1554967628262" duration="14771000" />
-      <workItem from="1555056764809" duration="6814000" />
+      <workItem from="1555056764809" duration="9447000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="23557000" />
+    <option name="totallyTimeSpent" value="26190000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1600" y="27" width="2560" height="1413" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.29713604" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.29713604" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32654658" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3257635" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39937353" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -345,7 +301,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="11" visible="true" weight="0.32811275" />
+      <window_info anchor="bottom" id="Terminal" order="11" weight="0.32811275" />
       <window_info anchor="bottom" id="Python Console" order="12" weight="0.32967892" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -384,6 +340,7 @@
     <SUITE FILE_PATH="coverage/Distributed_Malaria$federated_training.coverage" NAME="federated_training Coverage Results" MODIFIED="1554999397573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/Distributed_Malaria$parallel_coordinate_plot.coverage" NAME="parallel_coordinate_plot Coverage Results" MODIFIED="1554985823241" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../marl_thesis/MARL/src/03_analysis" />
     <SUITE FILE_PATH="coverage/Distributed_Malaria$dataloader.coverage" NAME="dataloader Coverage Results" MODIFIED="1554993741787" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/Distributed_Malaria$test_simple_CNN.coverage" NAME="test_simple_CNN Coverage Results" MODIFIED="1555074778088" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/../marl_thesis/MARL/src/03_analysis/get_performance.py">
@@ -483,32 +440,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/dataloader.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1074">
-          <caret line="111" column="26" selection-start-line="111" selection-start-column="4" selection-end-line="111" selection-end-column="26" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/blob_detection.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="570">
           <caret line="104" column="28" selection-start-line="104" selection-start-column="28" selection-end-line="104" selection-end-column="64" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/auxiliaries.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="129">
-          <caret line="92" selection-start-line="92" selection-end-line="92" selection-end-column="80" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -584,17 +521,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../marl_thesis/MARL/src/environment/actor_critic_pytorch.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="167" column="9" lean-forward="true" selection-start-line="167" selection-start-column="9" selection-end-line="167" selection-end-column="9" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="60">
+          <caret line="4" selection-start-line="4" selection-end-line="4" selection-end-column="32" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../marl_thesis/MARL/src/environment/population_class.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1172">
+        <state relative-caret-position="-1171">
           <caret line="75" column="16" lean-forward="true" selection-start-line="75" selection-start-column="16" selection-end-line="75" selection-end-column="16" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
@@ -621,7 +555,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../marl_thesis/MARL/src/environment/env_class_multiprocessing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11145">
+        <state relative-caret-position="8535">
           <caret line="743" column="71" lean-forward="true" selection-start-line="743" selection-start-column="71" selection-end-line="743" selection-end-column="71" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
@@ -629,12 +563,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/test_simple_CNN.py">
+    <entry file="file://$PROJECT_DIR$/src/dataloader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" selection-start-line="4" selection-end-line="5" selection-end-column="35" />
+        <state relative-caret-position="1530">
+          <caret line="111" column="26" selection-start-line="111" selection-start-column="4" selection-end-line="111" selection-end-column="26" />
           <folding>
-            <element signature="e#0#40#0" expanded="true" />
+            <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -646,10 +580,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/auxiliaries.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="299">
+          <caret line="94" column="32" selection-start-line="94" selection-start-column="32" selection-end-line="94" selection-end-column="60" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tests/test_pytorch_log.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="35" selection-start-line="2" selection-start-column="35" selection-end-line="2" selection-end-column="35" />
+        <state>
+          <caret column="14" lean-forward="true" selection-start-column="14" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/test_simple_CNN.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="20" selection-start-line="20" selection-end-line="20" />
+          <folding>
+            <element signature="e#0#40#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

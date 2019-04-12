@@ -5,25 +5,24 @@ import sys, os
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + '/../')
 
-import pytest
-from src.dataloader import create_dataloaders
 import torch.nn as nn
 from src.models.Custom_CNN import Simple_CNN
 import torch
+import torch.utils.data as utils
 
 use_cuda = torch.cuda.is_available()
 img_size = 48
 device = torch.device("cuda" if use_cuda else "cpu")
 
-train_loader, test_loader, val_loader = create_dataloaders(
-    batchsize=128, img_size=img_size, path="../../data/Classification"
-)
+# Dummy Dataloader
+dataset = utils.TensorDataset(torch.rand(100, 3, img_size, img_size), torch.rand(100).long())  # create your datset
+dataloader = utils.DataLoader(dataset, batch_size=42, shuffle=True)
 
-for batch_idx, (data, target) in enumerate(train_loader):
+for batch_idx, (data, target) in enumerate(dataloader):
     batch = [data, target]
     break
 
-model = Simple_CNN().to(device)
+model = Simple_CNN().float().to(device)
 loss = nn.CrossEntropyLoss()
 
 
