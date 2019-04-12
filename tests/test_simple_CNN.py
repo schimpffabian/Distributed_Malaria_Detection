@@ -9,48 +9,68 @@ import torch.nn as nn
 from src.models.Custom_CNN import Simple_CNN
 import torch
 import torch.utils.data as utils
-
-use_cuda = torch.cuda.is_available()
-img_size = 48
-device = torch.device("cuda" if use_cuda else "cpu")
-
-# Dummy Dataloader
-dataset = utils.TensorDataset(torch.rand(100, 3, img_size, img_size), torch.rand(100).long())  # create your datset
-dataloader = utils.DataLoader(dataset, batch_size=42, shuffle=True)
-
-for batch_idx, (data, target) in enumerate(dataloader):
-    batch = [data, target]
-    break
-
-model = Simple_CNN().float().to(device)
-loss = nn.CrossEntropyLoss()
+import pytest
 
 
-def test_vars_change():
+@pytest.fixture()
+def model():
+    use_cuda = torch.cuda.is_available()
+    device = torch.device("cuda" if use_cuda else "cpu")
+    return Simple_CNN().float().to(device)
+
+
+@pytest.fixture()
+def loss():
+    return nn.CrossEntropyLoss()
+
+
+@pytest.fixture()
+def loss_fn():
+    return nn.CrossEntropyLoss()
+
+
+@pytest.fixture()
+def batch():
+    img_size = 48
+
+    # Dummy Dataloader
+    dataset = utils.TensorDataset(torch.rand(100, 3, img_size, img_size), torch.rand(100).long())  # create your datset
+    dataloader = utils.DataLoader(dataset, batch_size=42, shuffle=True)
+
+    for batch_idx, (data, target) in enumerate(dataloader):
+        batch = [data, target]
+        break
+    return batch
+
+
+@pytest.fixture()
+def optim():
+    use_cuda = torch.cuda.is_available()
+    device = torch.device("cuda" if use_cuda else "cpu")
+    return torch.optim.Adam(Simple_CNN().float().to(device).parameters())
+
+
+def test_vars_change(model, loss, batch):
+
     assert_vars_change(
-        model=model,
-        loss_fn=loss,
-        optim=torch.optim.Adam(model.parameters()),
-        batch=batch,
+        model,
+        loss,
+        torch.optim.Adam(model.parameters()),
+        batch,
     )
 
 
-def test_nan_vals():
+def test_nan_vals(model, loss_fn, batch, optim):
+
     test_suite(
-        model=model,
-        loss_fn=loss,
-        optim=torch.optim.Adam(model.parameters()),
-        batch=batch,
+        model,loss_fn,optim, batch,
         test_nan_vals=True,
     )
 
 
-def test_inf_vals():
+def test_inf_vals(model, loss_fn, batch, optim):
     test_suite(
-        model=model,
-        loss_fn=loss,
-        optim=torch.optim.Adam(model.parameters()),
-        batch=batch,
+        model, loss_fn, optim, batch,
         test_inf_vals=True,
     )
 
