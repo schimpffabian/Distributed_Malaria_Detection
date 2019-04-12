@@ -1,6 +1,7 @@
-import src.dataloader as dataloader
+import sys, os
 
-train_loader, test_loader, val_loader = dataloader.create_dataloaders()
+sys.path.append(os.path.join(".."))  # add the current directory
+import src.dataloader as dataloader
 
 
 def test_create_dataloaders():
@@ -9,5 +10,4 @@ def test_create_dataloaders():
     validation data
     :return:
     """
-
-    # ToDo: Write test
+    train_loader, test_loader, val_loader = dataloader.create_dataloaders()

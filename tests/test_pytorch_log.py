@@ -1,3 +1,7 @@
+import sys, os
+
+sys.path.append(os.path.join(".."))  # add the current directory
+
 import src.pytorch_log
 import numpy as np
 import matplotlib.pyplot as plt
