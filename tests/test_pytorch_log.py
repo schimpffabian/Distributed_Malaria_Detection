@@ -1,6 +1,6 @@
 import sys, os
-
-sys.path.append(os.path.join(".."))  # add the current directory
+myPath = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, myPath + '/../')
 
 import src.pytorch_log
 import numpy as np

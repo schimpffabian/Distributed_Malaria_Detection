@@ -1,9 +1,9 @@
 from torchtest import assert_vars_change
 from torchtest import test_suite
-import sys
-import sys, os
 
-sys.path.append(os.path.join(".."))  # add the current directory
+import sys, os
+myPath = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, myPath + '/../')
 
 import pytest
 from src.dataloader import create_dataloaders

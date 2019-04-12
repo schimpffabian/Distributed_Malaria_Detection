@@ -1,6 +1,7 @@
 import sys, os
+myPath = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, myPath + '/../')
 
-sys.path.append(os.path.join(".."))  # add the current directory
 import src.dataloader as dataloader
 
 
