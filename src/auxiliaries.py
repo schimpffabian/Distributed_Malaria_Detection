@@ -4,6 +4,7 @@ from torchvision import models
 from os import listdir
 from os.path import isfile, join
 import numpy as np
+import copy
 
 log_interval = 10
 
@@ -93,28 +94,43 @@ def initialize_model(model_name, num_classes, feature_extract, use_pretrained=Tr
 def train(model, device, train_loader, optimizer, epoch, loss, federated=False):
     model.train()
     for batch_idx, (data, target) in enumerate(train_loader):
+        print(batch_idx)
         if federated:
-            model.send(data.location)
+            model_backup = copy.deepcopy(model)
+        try:
+            if federated:
+                model.send(data.location)
+        except KeyError:
+            print("Key Error occured")
+            break
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad()
         prediction = model(data)
         output = loss(prediction, target)
         output.backward()
         optimizer.step()
+        try:
+            optimizer.step()
+        except TypeError:
+            print("Type Error occured")
+            model = model_backup
+            break
         if federated:
             model.get()
         if batch_idx % log_interval == 0:
             if federated:
                 output = output.get()
-            print(
-                "Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}".format(
-                    epoch,
-                    batch_idx * len(data),
-                    len(train_loader.dataset),
-                    100.0 * batch_idx / len(train_loader),
-                    output.item(),
+
+            if hasattr(train_loader, "dataset"):
+                print(
+                    "Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}".format(
+                        epoch,
+                        batch_idx * len(data),
+                        len(train_loader.dataset),
+                        100.0 * batch_idx / len(train_loader),
+                        output.item(),
+                    )
                 )
-            )
 
 
 def run_t(model, device, test_loader, loss):
@@ -133,14 +149,15 @@ def run_t(model, device, test_loader, loss):
 
     test_loss /= len(test_loader.dataset)
 
-    print(
-        "\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n".format(
-            test_loss,
-            correct,
-            len(test_loader.dataset),
-            100.0 * correct / len(test_loader.dataset),
+    if hasattr(test_loader, "dataset"):
+        print(
+            "\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n".format(
+                test_loss,
+                correct,
+                len(test_loader.dataset),
+                100.0 * correct / len(test_loader.dataset),
+            )
         )
-    )
 
 
 def get_images(path):
