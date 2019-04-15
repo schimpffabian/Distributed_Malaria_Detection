@@ -1,12 +1,11 @@
-from __future__ import print_function
-from src.models.Custom_CNN import Simple_CNN
 import torch
 import torch.optim as optim
-from src.auxiliaries import train, run_t, initialize_model
-from src.dataloader import create_dataloaders
 import torch.nn as nn
-
-lr = 1e-3
+from src.auxiliaries import train
+from src.auxiliaries import run_t
+from src.auxiliaries import initialize_model
+from src.dataloader import create_dataloaders
+from src.models.Custom_CNN import Simple_CNN
 
 
 def finetune_model(
@@ -15,6 +14,7 @@ def finetune_model(
     batch_size=64,
     num_epochs=42,
     feature_extract=True,
+    lr=1e-3,
 ):
 
     model_ft, input_size = initialize_model(
@@ -41,7 +41,7 @@ def finetune_model(
     )
 
 
-def main(model=Simple_CNN(), batch_size=64, num_epochs=42, img_size=48):
+def main(model=Simple_CNN(), batch_size=64, num_epochs=42, img_size=48, lr=1e-3):
 
     # Training settings
     use_cuda = torch.cuda.is_available()

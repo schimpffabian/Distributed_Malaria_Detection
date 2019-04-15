@@ -1,10 +1,11 @@
-import sys, os
-myPath = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, myPath + '/../')
-
-import src.pytorch_log
+import sys
+import os
 import numpy as np
 import matplotlib.pyplot as plt
+
+myPath = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, myPath + "/../")
+
 
 if __name__ == "__main__":
     # create_test_image
