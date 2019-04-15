@@ -12,3 +12,6 @@ repos:
     - id: flake8
       args: [--max-line-length=100]
     - id: check-docstring-first
+    - id: check-ast
+    - id: mixed-line-ending
+    - id: requirements-txt-fixer
