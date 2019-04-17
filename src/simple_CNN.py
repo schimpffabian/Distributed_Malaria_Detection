@@ -53,10 +53,12 @@ def main(model=Simple_CNN(), batch_size=64, num_epochs=42, img_size=48, lr=1e-3)
     )
 
     model = model.to(device)
+
+    loss = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=lr)
 
     for epoch in range(1, num_epochs + 1):
-        train(model, device, train_loader, optimizer, epoch)
+        train(model, device, train_loader, optimizer, epoch, loss)
         run_t(model, device, test_loader)
 
     torch.save(
@@ -66,4 +68,5 @@ def main(model=Simple_CNN(), batch_size=64, num_epochs=42, img_size=48, lr=1e-3)
 
 
 if __name__ == "__main__":
-    finetune_model()
+    main()
+    # finetune_model()

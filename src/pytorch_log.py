@@ -1,11 +1,8 @@
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
-from matplotlib.image import imread
 import matplotlib.pyplot as plt
-from src.auxiliaries import get_images, rgb2gray
 import numpy as np
-from math import sqrt, ceil, floor
+from math import sqrt, floor
 from skimage.feature import blob_log
 import timeit
 
@@ -75,9 +72,9 @@ def log(img, min_sigma=5, max_sigma=5, num_sigma=1, exclude_borders=True):
         x = x.unsqueeze(0)
 
     kernel, sigma_vec = log_kernel(kernel_size, sigma_start, sigma_end, num_filters)
+    gauss_kernel = torch.Tensor(kernel).unsqueeze(1).double()
 
     start_pt = timeit.default_timer()
-    gauss_kernel = torch.Tensor(kernel).unsqueeze(1).double()
     x_gauss = F.conv2d(x, gauss_kernel, padding=padding)
 
     x_gauss = x_gauss * -1
@@ -123,18 +120,6 @@ def log(img, min_sigma=5, max_sigma=5, num_sigma=1, exclude_borders=True):
 
 # https://discuss.pytorch.org/t/changing-the-weights-of-conv2d/22992/14
 def benchmark_log():
-    path = "../data/Real_Application/"
-    images = get_images(path)
-    # for image in images:
-    image = "malaria_0.jpg"
-    img = imread(path + image)
-    image_gray = rgb2gray(img)
-    image_gray = image_gray.squeeze()
-
-    image_gray_inverse = image_gray
-    # image_gray_inverse[0:-1, 0:-1] = 150
-    # image_gray_inverse[45:90, 150:200] = 0
-
     num_runs = 1
     time_pt_log = 0
     time_sk_log = 0
@@ -204,27 +189,3 @@ def benchmark_log():
 
 if __name__ == "__main__":
     benchmark_log()
-
-"""
-    from scipy.ndimage import gaussian_laplace
-    x_gauss_scipy = gaussian_laplace(torch.squeeze(x).data.numpy(), sigma=sigma_start)
-    x_max_scipy = maxpooling(torch.tensor(x_gauss_scipy).unsqueeze(0).unsqueeze(0).double())
-
-    x_max_scipy = torch.squeeze(x_max_scipy).data.numpy()
-    maxima_scipy = (x_gauss_scipy == x_max_scipy) * 1
-
-    difference_gauss = x_gauss_np - x_gauss_scipy
-    #difference_max = x_max - x_max_scipy
-
-    plt.figure(1)
-    fig, axes = plt.subplots(1, 4, figsize=(9, 3), sharex=True, sharey=True)
-    ax = axes.ravel()
-
-
-    ax[0].imshow(img, interpolation='nearest')
-    ax[1].imshow(x_gauss_np, interpolation='nearest')
-    ax[2].imshow(x_gauss_scipy, interpolation='nearest')
-    ax[3].imshow(difference_gauss, interpolation='nearest')
-    plt.show()
-
-"""

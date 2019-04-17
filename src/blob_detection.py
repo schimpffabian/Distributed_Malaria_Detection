@@ -1,27 +1,32 @@
 from matplotlib.image import imread
 import matplotlib.pyplot as plt
-from os import listdir
-from os.path import isfile, join
 import numpy as np
 from skimage.feature import blob_dog, blob_log, blob_doh
 from math import sqrt
 from skimage.transform import resize
-from src.models.Custom_CNN import Simple_CNN
-from src.auxiliaries import get_images, rgb2gray
+
+try:
+    from src.models.Custom_CNN import Simple_CNN
+    from src.auxiliaries import get_images, rgb2gray
+except ModuleNotFoundError:
+    from models.Custom_CNN import Simple_CNN
+    from auxiliaries import get_images, rgb2gray
 import torch
+from torch.jit import trace
 
 IMG_SIZE = 48
 
 
 def get_cell_image(x, y, r, img):
     """
-	Receives x, y and the respective radius of a a blob in an image, returns rectangular image with blob inside
-	:param x:
-	:param y:
-	:param r:
-	:param img:
-	:return:
-	"""
+    Receives x, y and the respective radius of a a blob in an image, returns rectangular image with
+    blob inside
+    :param x:
+    :param y:
+    :param r:
+    :param img:
+    :return:
+    """
     img_shape = img.shape
     cons_r = np.ceil(r)  # conservative radius is ceiled to encapsulate blob fully
 
@@ -81,8 +86,9 @@ def create_blob_sequence(image):
     return sequence
 
 
+#  @profile
 def classify_cell_image(cell_image, model):
-    cell_resized = resize(cell_image, (IMG_SIZE, IMG_SIZE), anti_aliasing=True)
+    cell_resized = resize(cell_image, (IMG_SIZE, IMG_SIZE), anti_aliasing=False)
     cell_torch = torch.from_numpy(cell_resized).reshape((1, 3, IMG_SIZE, IMG_SIZE))
     cell_torch = cell_torch.double()
     prediction = model(cell_torch)
@@ -90,19 +96,24 @@ def classify_cell_image(cell_image, model):
     return prediction.data.numpy().argmax()
 
 
-def load_model(path):
+def load_model(path, tracing=False):
     model = Simple_CNN()
     model.load_state_dict(torch.load(path))
     model = model.double()
 
-    return model
+    if tracing:
+        sample_input = torch.rand((1, 3, IMG_SIZE, IMG_SIZE)).double()
+        traced_model = trace(model, example_inputs=sample_input)
+        return traced_model
+    else:
+        return model
 
 
 def main():
     path = "../data/Real_Application/"
     images = get_images(path)
 
-    model = load_model(path="./models/custom_cnn_e10_size_48.pt")
+    model = load_model(path="./models/custom_cnn_e10_size_48.pt", tracing=False)
 
     for image in images:
         # image = "malaria_0.jpg"
@@ -125,7 +136,9 @@ def main():
                 y, x, r = blob
                 cell_img = get_cell_image(x, y, r, img)
                 try:
+
                     label = classify_cell_image(cell_img, model)
+
                 except ValueError:
                     label = 1
                 if label == 1:
@@ -135,31 +148,9 @@ def main():
                 ax[idx].add_patch(c)
             ax[idx].set_axis_off()
 
-        plt.tight_layout()
-        plt.show()
-        """
-        plt.figure(2)
-        fig2, axes2 = plt.subplots(1, 1, figsize=(9, 9), sharex=True, sharey=True)
-        sequence = create_blob_sequence(image_gray_inverse)
-        for idx, (blobs, color, title) in enumerate(sequence):
-            if idx != 0:
-                break
-            for blob in blobs:
-                y, x, r = blob
-                print(r)
-                cell_img = get_cell_image(x, y, r, img)
-                label = classify_cell_image(cell_img, model)
-
-                if label == 0:
-                    plt.title("infected")
-                else:
-                    plt.title("healthy")
-
-                plt.imshow(cell_img)
-                plt.tight_layout()
-                plt.show(block=False)
         break
-        """
+        # plt.tight_layout()
+        # plt.show()
 
 
 if __name__ == "__main__":

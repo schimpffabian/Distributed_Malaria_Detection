@@ -107,6 +107,8 @@ def train(model, device, train_loader, optimizer, epoch, loss, federated=False):
         optimizer.zero_grad()
         prediction = model(data)
         output = loss(prediction, target)
+
+        print("Hi Mom", output.data.numpy())
         output.backward()
         optimizer.step()
         try:
