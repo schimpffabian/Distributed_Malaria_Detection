@@ -10,6 +10,11 @@ log_interval = 10
 
 
 def set_parameter_requires_grad(model, feature_extracting):
+    """
+
+    :param model:
+    :param feature_extracting:
+    """
     #  Source: https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.htmlS
     if feature_extracting:
         for param in model.parameters():
@@ -17,6 +22,14 @@ def set_parameter_requires_grad(model, feature_extracting):
 
 
 def initialize_model(model_name, num_classes, feature_extract, use_pretrained=True):
+    """
+
+    :param model_name:
+    :param num_classes:
+    :param feature_extract:
+    :param use_pretrained:
+    :return:
+    """
     #  Source: https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.html
     # Initialize these variables which will be set in this if statement. Each of these
     #   variables is model specific.
@@ -92,6 +105,16 @@ def initialize_model(model_name, num_classes, feature_extract, use_pretrained=Tr
 
 
 def train(model, device, train_loader, optimizer, epoch, loss, federated=False):
+    """
+
+    :param model:
+    :param device:
+    :param train_loader:
+    :param optimizer:
+    :param epoch:
+    :param loss:
+    :param federated:
+    """
     model.train()
     for batch_idx, (data, target) in enumerate(train_loader):
         print(batch_idx)
@@ -135,19 +158,35 @@ def train(model, device, train_loader, optimizer, epoch, loss, federated=False):
                 )
 
 
-def run_t(model, device, test_loader, loss):
+def run_t(model, device, test_loader, loss, secure_evaluation=False):
+    """
+
+    :param model:
+    :param device:
+    :param test_loader:
+    :param loss:
+    """
     model.eval()
+
     test_loss = 0
     correct = 0
+    num_predictions = 0
+
     with torch.no_grad():
         for data, target in test_loader:
+            batch_size = len(target)
             data, target = data.to(device), target.to(device)
             prediction = model(data)
             test_loss += loss(prediction, target)
             pred = prediction.argmax(
                 dim=1, keepdim=True
             )  # get the index of the max log-probability
+
             correct += pred.eq(target.view_as(pred)).sum().item()
+            num_predictions += batch_size
+
+            if secure_evaluation:
+                correct_decoded = correct.copy().get().float_precision().long().item()
 
     test_loss /= len(test_loader.dataset)
 
@@ -160,12 +199,30 @@ def run_t(model, device, test_loader, loss):
                 100.0 * correct / len(test_loader.dataset),
             )
         )
+    else:
+        print(
+            "Test set: Accuracy: {}/{} ({:.0f}%)".format(
+                correct_decoded,
+                num_predictions,
+                100.0 * correct_decoded / num_predictions,
+            )
+        )
 
 
 def get_images(path):
+    """
+
+    :param path:
+    :return:
+    """
     return [f for f in listdir(path) if isfile(join(path, f))]
 
 
 def rgb2gray(rgb):
+    """
+
+    :param rgb:
+    :return:
+    """
     transform_factor = np.array([0.2989, 0.5870, 0.1140]).reshape((3, 1))
     return rgb @ transform_factor

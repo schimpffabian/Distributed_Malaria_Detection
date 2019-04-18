@@ -16,7 +16,15 @@ def finetune_model(
     feature_extract=True,
     lr=1e-3,
 ):
+    """
 
+    :param model_name:
+    :param num_classes:
+    :param batch_size:
+    :param num_epochs:
+    :param feature_extract:
+    :param lr:
+    """
     model_ft, input_size = initialize_model(
         model_name, num_classes, feature_extract, use_pretrained=True
     )
@@ -42,7 +50,14 @@ def finetune_model(
 
 
 def main(model=Simple_CNN(), batch_size=64, num_epochs=42, img_size=48, lr=1e-3):
+    """
 
+    :param model:
+    :param batch_size:
+    :param num_epochs:
+    :param img_size:
+    :param lr:
+    """
     # Training settings
     use_cuda = torch.cuda.is_available()
 

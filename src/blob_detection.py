@@ -64,6 +64,11 @@ def get_cell_image(x, y, r, img):
 
 
 def create_blob_sequence(image):
+    """
+
+    :param image:
+    :return:
+    """
     blobs_log = blob_log(image, min_sigma=15, max_sigma=40, num_sigma=10, overlap=1)
 
     # Compute radii in the 3rd column.
@@ -88,6 +93,12 @@ def create_blob_sequence(image):
 
 #  @profile
 def classify_cell_image(cell_image, model):
+    """
+
+    :param cell_image:
+    :param model:
+    :return:
+    """
     cell_resized = resize(cell_image, (IMG_SIZE, IMG_SIZE), anti_aliasing=False)
     cell_torch = torch.from_numpy(cell_resized).reshape((1, 3, IMG_SIZE, IMG_SIZE))
     cell_torch = cell_torch.double()
@@ -97,6 +108,12 @@ def classify_cell_image(cell_image, model):
 
 
 def load_model(path, tracing=False):
+    """
+
+    :param path:
+    :param tracing:
+    :return:
+    """
     model = Simple_CNN()
     model.load_state_dict(torch.load(path))
     model = model.double()
@@ -110,6 +127,9 @@ def load_model(path, tracing=False):
 
 
 def main():
+    """
+
+    """
     path = "../data/Real_Application/"
     images = get_images(path)
 

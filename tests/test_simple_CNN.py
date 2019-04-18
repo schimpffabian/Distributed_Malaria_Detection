@@ -15,6 +15,10 @@ sys.path.insert(0, myPath + "/../")
 
 @pytest.fixture()
 def model():
+    """
+
+    :return:
+    """
     use_cuda = torch.cuda.is_available()
     device = torch.device("cuda" if use_cuda else "cpu")
     return Simple_CNN().float().to(device)
@@ -22,16 +26,28 @@ def model():
 
 @pytest.fixture()
 def loss():
+    """
+
+    :return:
+    """
     return nn.CrossEntropyLoss()
 
 
 @pytest.fixture()
 def loss_fn():
+    """
+
+    :return:
+    """
     return nn.CrossEntropyLoss()
 
 
 @pytest.fixture()
 def batch():
+    """
+
+    :return:
+    """
     img_size = 48
 
     # Dummy Dataloader
@@ -48,22 +64,44 @@ def batch():
 
 @pytest.fixture()
 def optim():
+    """
+
+    :return:
+    """
     use_cuda = torch.cuda.is_available()
     device = torch.device("cuda" if use_cuda else "cpu")
     return torch.optim.Adam(Simple_CNN().float().to(device).parameters())
 
 
 def test_vars_change(model, loss, batch):
+    """
 
+    :param model:
+    :param loss:
+    :param batch:
+    """
     assert_vars_change(model, loss, torch.optim.Adam(model.parameters()), batch)
 
 
 def test_nan_vals(model, loss_fn, batch, optim):
+    """
 
+    :param model:
+    :param loss_fn:
+    :param batch:
+    :param optim:
+    """
     test_suite(model, loss_fn, optim, batch, test_nan_vals=True)
 
 
 def test_inf_vals(model, loss_fn, batch, optim):
+    """
+
+    :param model:
+    :param loss_fn:
+    :param batch:
+    :param optim:
+    """
     test_suite(model, loss_fn, optim, batch, test_inf_vals=True)
 
 

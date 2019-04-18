@@ -8,15 +8,15 @@ def output_shape(
 ):
     """
 
-    :param C_in:
-    :param C_out:
+    :param c_in:
+    :param c_out:
+    :param n:
+    :param h_in:
+    :param w_in:
     :param kernel_size:
     :param stride:
     :param padding:
     :param dilation:
-    :param N:
-    :param H_in:
-    :param W_in:
     :return:
     """
     if not hasattr(kernel_size, "__len__"):
@@ -44,6 +44,10 @@ def output_shape(
 
 
 class Simple_CNN(nn.Module):
+    """
+
+    """
+
     def __init__(self):
         super(Simple_CNN, self).__init__()
         self.conv1 = nn.Conv2d(3, 20, 3, 3)
@@ -53,6 +57,11 @@ class Simple_CNN(nn.Module):
         self.fc2 = nn.Linear(500, 2)
 
     def forward(self, x):
+        """
+
+        :param x:
+        :return:
+        """
         x = F.relu(self.conv1(x))
         x = F.max_pool2d(x, 2, 2)
         x = F.relu(self.conv2(x))

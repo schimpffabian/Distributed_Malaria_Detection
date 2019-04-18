@@ -1,24 +1,28 @@
 from skimage.segmentation import mark_boundaries
 import matplotlib.pyplot as plt
 from matplotlib.image import imread
-import sys, os
+import sys
+import os
 
 try:
-    from src.models.Custom_CNN import Simple_CNN
-    from src.auxiliaries import get_images, initialize_model
-except:
+    # from src.models.Custom_CNN import Simple_CNN
+    from src.auxiliaries import get_images
+    from src.auxiliaries import initialize_model
+except ModuleNotFoundError:
     sys.path.append(os.path.join("..", ".."))  # add the current directory
-    from src.models.Custom_CNN import Simple_CNN
-    from src.auxiliaries import get_images, initialize_model
+    # from src.models.Custom_CNN import Simple_CNN
+    from src.auxiliaries import get_images
+    from src.auxiliaries import initialize_model
 import torch
-import torch.nn as F
-
-import lime
 from lime import lime_image
 from scipy import misc
 
 
 class Model:
+    """
+
+    """
+
     def __init__(self, net, device, input_size):
         self.net = net.double().to(device)
         self.device = device
@@ -26,6 +30,11 @@ class Model:
         self.softmax = torch.nn.Softmax()
 
     def predict(self, x):
+        """
+
+        :param x:
+        :return:
+        """
         self.net.eval()
         x = (
             torch.from_numpy(x)
@@ -37,6 +46,11 @@ class Model:
         return output.detach().cpu().numpy()
 
     def predict_prob(self, x):
+        """
+
+        :param x:
+        :return:
+        """
         self.net.eval()
         x = (
             torch.from_numpy(x)

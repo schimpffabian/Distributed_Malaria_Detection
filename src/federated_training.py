@@ -10,6 +10,10 @@ from src.auxiliaries import run_t, train
 
 
 class DatasetFromSubset(Dataset):
+    """
+
+    """
+
     def __init__(self, subset):
         data, targets = self.subset_to_dataset(subset)
         self.data = data
@@ -23,6 +27,11 @@ class DatasetFromSubset(Dataset):
 
     @staticmethod
     def subset_to_dataset(subset):
+        """
+
+        :param subset:
+        :return:
+        """
         indices = subset.indices
         targets = subset.dataset.targets
 
@@ -51,7 +60,13 @@ def create_federated_dataset(
     img_size=48,
     percentage_of_dataset=np.array([0.8, 0.2]),
 ):
+    """
 
+    :param path:
+    :param img_size:
+    :param percentage_of_dataset:
+    :return:
+    """
     data_augmentation = get_data_augmentation(False, img_size)
     dataset = create_dataset(path=path, data_augmentation=data_augmentation)
     split_datasets = split_dataset(dataset, percentage_of_dataset)
@@ -59,6 +74,9 @@ def create_federated_dataset(
 
 
 def simple_federated_model():
+    """
+
+    """
     epochs = 2
 
     use_cuda = torch.cuda.is_available()
@@ -91,7 +109,6 @@ def simple_federated_model():
     loss = nn.CrossEntropyLoss()
 
     for epoch in range(1, epochs + 1):
-        run_t(model, device, test_loader, loss)
         train(
             model,
             device,
@@ -104,6 +121,53 @@ def simple_federated_model():
         run_t(model, device, test_loader, loss)
 
 
+def secure_evaluation():
+    """
+    https://blog.openmined.org/encrypted-deep-learning-classification-with-pysyft/
+    """
+
+    use_cuda = torch.cuda.is_available()
+    torch.manual_seed(42)
+    hook = sy.TorchHook(torch)
+    # client = sy.VirtualWorker(hook, id="client")
+    katherienhospital = sy.VirtualWorker(
+        hook, id="kh"
+    )  # <-- NEW: define remote worker bob
+    filderklinik = sy.VirtualWorker(hook, id="fikli")
+    crypto_provider = sy.VirtualWorker(hook, id="crypto_provider")
+
+    train_set, test_set = create_federated_dataset()
+    test_loader = torch.utils.data.DataLoader(test_set, batch_size=42, shuffle=True)
+
+    model = Simple_CNN()
+    model.load_state_dict(torch.load("./models/custom_cnn_e10_size_48.pt"))
+    model = model.float()
+    device = torch.device("cuda" if use_cuda else "cpu")
+
+    loss = nn.CrossEntropyLoss()
+
+    # Changes for secure evaluation
+    model.fix_precision().share(
+        katherienhospital, filderklinik, crypto_provider=crypto_provider
+    )
+
+    private_test_loader = []
+    for data, target in test_loader:
+        pass
+        private_test_loader.append(
+            (
+                data.fix_prec().share(
+                    katherienhospital, filderklinik, crypto_provider=crypto_provider
+                ),
+                target.fix_prec().share(
+                    katherienhospital, filderklinik, crypto_provider=crypto_provider
+                ),
+            )
+        )
+    run_t(model, device, private_test_loader, loss, secure_evaluation=True)
+
+
 if __name__ == "__main__":
     # test_input_federated_dataloader()
-    simple_federated_model()
+    # simple_federated_model()
+    secure_evaluation()

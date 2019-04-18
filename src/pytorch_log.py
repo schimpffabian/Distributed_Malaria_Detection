@@ -10,6 +10,15 @@ import timeit
 def log_kernel(
     kernel_size, sigma_start=1.0, sigma_stop=10.0, num_sigma_steps=10, lin_sigma=True
 ):
+    """
+
+    :param kernel_size:
+    :param sigma_start:
+    :param sigma_stop:
+    :param num_sigma_steps:
+    :param lin_sigma:
+    :return:
+    """
     if kernel_size % 2 == 0:
         ValueError("please use odd kernel sizes")
 
@@ -54,6 +63,15 @@ def log_kernel(
 
 
 def log(img, min_sigma=5, max_sigma=5, num_sigma=1, exclude_borders=True):
+    """
+
+    :param img:
+    :param min_sigma:
+    :param max_sigma:
+    :param num_sigma:
+    :param exclude_borders:
+    :return:
+    """
     num_filters = num_sigma
     sigma_start = min_sigma
     sigma_end = max_sigma
@@ -120,6 +138,9 @@ def log(img, min_sigma=5, max_sigma=5, num_sigma=1, exclude_borders=True):
 
 # https://discuss.pytorch.org/t/changing-the-weights-of-conv2d/22992/14
 def benchmark_log():
+    """
+
+    """
     num_runs = 1
     time_pt_log = 0
     time_sk_log = 0

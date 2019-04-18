@@ -2,10 +2,16 @@ import torch
 import numpy as np
 from torchvision.datasets.folder import ImageFolder
 import torchvision.transforms as transforms
-from torch.utils.data import Dataset
+
+# from torch.utils.data import Dataset
 
 
 def randomize_background(x):
+    """
+
+    :param x:
+    :return:
+    """
     for ii in range(x.shape[1]):
         for jj in range(x.shape[2]):
             if x[0][ii][jj] == 0 and x[1][ii][jj] == 0 and x[2][ii][jj] == 0:
@@ -16,6 +22,12 @@ def randomize_background(x):
 
 
 def get_data_augmentation(random_background, img_size):
+    """
+
+    :param random_background:
+    :param img_size:
+    :return:
+    """
     # Define data augmentation and transforms
     # transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
     if random_background:
@@ -80,11 +92,23 @@ def resample(target_list, imbal_class_prop):
 
 
 def create_dataset(path, data_augmentation):
+    """
+
+    :param path:
+    :param data_augmentation:
+    :return:
+    """
     dataset = ImageFolder(root=path, transform=data_augmentation)
     return dataset
 
 
 def split_dataset(dataset, percentage_of_dataset):
+    """
+
+    :param dataset:
+    :param percentage_of_dataset:
+    :return:
+    """
     size_set = []
     for ii in range(len(percentage_of_dataset) - 1):
         size_set.append(int(percentage_of_dataset[ii] * len(dataset)))
@@ -94,6 +118,13 @@ def split_dataset(dataset, percentage_of_dataset):
 
 
 def set_prop_dataset(datasets, targets, balance):
+    """
+
+    :param datasets:
+    :param targets:
+    :param balance:
+    :return:
+    """
     new_datasets = []
     for ii, dataset in enumerate(datasets):
         dataset_targets = [targets[ii] for ii in dataset.indices]
@@ -112,6 +143,17 @@ def create_dataloaders(
     percentage_of_dataset=np.array([0.75, 0.2, 0.05]),
     balance=np.array([[0.5, 0.5], [0.5, 0.5], [0.5, 0.5]]),
 ):
+    """
+
+    :param batchsize:
+    :param img_size:
+    :param path:
+    :param random_background:
+    :param num_workers:
+    :param percentage_of_dataset:
+    :param balance:
+    :return:
+    """
     data_augmentation = get_data_augmentation(random_background, img_size)
 
     # Load all data, create dataset
@@ -119,7 +161,8 @@ def create_dataloaders(
     targets = dataset.targets
 
     # Split dataset into training, test and validation set
-    # This is pretty clumsy but due to backward compatibility of PyTorch https://github.com/pytorch/pytorch/pull/12068
+    # This is pretty clumsy but due to backward compatibility of PyTorch
+    # https://github.com/pytorch/pytorch/pull/12068
     split_datasets = split_dataset(dataset, percentage_of_dataset)
 
     # Set probability of targets in each dataset
@@ -142,36 +185,3 @@ def create_dataloaders(
 
 if __name__ == "__main__":
     train_loader, test_loader, val_loader = create_dataloaders()
-
-"""       
-   size_train = int(0.75 * len(dataset))
-   size_test = int(0.2 * len(dataset))
-   size_val = int(len(dataset) - size_train - size_test)
-
-   train_set, test_set, val_set = torch.utils.data.random_split(
-       dataset, [size_train, size_test, size_val]
-   )
-
-   val_set_targets = [targets[ii] for ii in val_set.indices]
-   print(len(val_set_targets))
-   idx = resample(val_set_targets, np.array([0.2, 0.8]))
-   val_set.indices = list(val_set.indices[idx])
-   val_set_targets = [targets[ii] for ii in val_set.indices]
-   print(len(val_set_targets))
-
-   # Create dataloaders
-   train_loader = torch.utils.data.DataLoader(
-       dataset=train_set, batch_size=batchsize, shuffle=True, num_workers=num_workers
-   )
-
-   test_loader = torch.utils.data.DataLoader(
-       dataset=test_set, batch_size=batchsize, shuffle=True, num_workers=num_workers
-   )
-
-   val_loader = torch.utils.data.DataLoader(
-       dataset=val_set, batch_size=batchsize, shuffle=True, num_workers=num_workers
-   )
-
-
-   return train_loader, test_loader, val_loader
-"""
