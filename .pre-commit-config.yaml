@@ -9,6 +9,7 @@ repos:
     rev: master
     hooks:
     - id: bandit
+      args: [--skip=B101]
 
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v1.2.3
@@ -16,7 +17,7 @@ repos:
     - id: check-merge-conflict
     - id: debug-statements
     - id: flake8
-      args: [--max-line-length=100]
+      args: [--max-line-length=100, --ignore=E402]
     - id: check-docstring-first
     - id: check-ast
     - id: mixed-line-ending

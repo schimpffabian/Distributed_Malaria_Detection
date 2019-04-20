@@ -103,9 +103,3 @@ def test_inf_vals(model, loss_fn, batch, optim):
     :param optim:
     """
     test_suite(model, loss_fn, optim, batch, test_inf_vals=True)
-
-
-if __name__ == "__main__":
-    test_vars_change()
-    test_inf_vals()
-    test_nan_vals()

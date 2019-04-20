@@ -6,26 +6,39 @@ import torchvision.transforms as transforms
 # from torch.utils.data import Dataset
 
 
-def randomize_background(x):
+def randomize_background(x, dark_background=True):
+    """
+    Since images in the malaria datasets have default backgrounds around the cells and LIME
+    indicates that NNs use the backgrounds shape to make predictions
+    :param x: torch.tensor
+    :param dark_background: Bool value of background True - 0,False - 255
+    :return: Image with ranomized input
     """
 
-    :param x:
-    :return:
-    """
+    if len(x.shape) != 3:
+        raise AttributeError("Make sure arrays fed to function have the right shape")
+
     for ii in range(x.shape[1]):
         for jj in range(x.shape[2]):
-            if x[0][ii][jj] == 0 and x[1][ii][jj] == 0 and x[2][ii][jj] == 0:
-                x[0][ii][jj] = torch.rand(1)
-                x[1][ii][jj] = torch.rand(1)
-                x[2][ii][jj] = torch.rand(1)
+            if dark_background:
+                if x[0][ii][jj] == 0 and x[1][ii][jj] == 0 and x[2][ii][jj] == 0:
+                    x[0][ii][jj] = torch.rand(1)
+                    x[1][ii][jj] = torch.rand(1)
+                    x[2][ii][jj] = torch.rand(1)
+            else:
+                if x[0][ii][jj] == 255 and x[1][ii][jj] == 255 and x[2][ii][jj] == 255:
+                    x[0][ii][jj] = torch.rand(1)
+                    x[1][ii][jj] = torch.rand(1)
+                    x[2][ii][jj] = torch.rand(1)
     return x
 
 
-def get_data_augmentation(random_background, img_size):
+def get_data_augmentation(random_background, img_size, dark_background=True):
     """
-
-    :param random_background:
-    :param img_size:
+    Standard composed transformations for data augmentation
+    :param random_background: Bool - Randomize background
+    :param img_size: Scales input images to square img_size
+    :param dark_background: Bool - True - background has val 0 otherwise val 255
     :return:
     """
     # Define data augmentation and transforms
@@ -56,6 +69,8 @@ def get_data_augmentation(random_background, img_size):
 def get_labels_and_class_counts(labels_list):
     """
     Calculates the counts of all unique classes.
+    :param labels_list: list or ndarray with labels
+    :return:
     """
     labels = np.array(labels_list)
     _, class_counts = np.unique(labels, return_counts=True)
@@ -68,6 +83,8 @@ def resample(target_list, imbal_class_prop):
     Function adapted from ptrblck's PyTorch fork
     https://github.com/ptrblck/tutorials/blob/imbalanced_tutorial/intermediate_source/imbalanced_data_tutorial.py#L297
     Resample the indices to create an artificially imbalanced dataset.
+    :param target_list
+    :param imbal_class_prop
     :return:
     """
     targets, class_counts = get_labels_and_class_counts(target_list)
@@ -93,10 +110,10 @@ def resample(target_list, imbal_class_prop):
 
 def create_dataset(path, data_augmentation):
     """
-
-    :param path:
-    :param data_augmentation:
-    :return:
+    Convenience function for this project
+    :param path: str path to root directory containing folders with samples for each class
+    :param data_augmentation: torch transforms object
+    :return: torch dataset
     """
     dataset = ImageFolder(root=path, transform=data_augmentation)
     return dataset
@@ -104,22 +121,32 @@ def create_dataset(path, data_augmentation):
 
 def split_dataset(dataset, percentage_of_dataset):
     """
-
-    :param dataset:
-    :param percentage_of_dataset:
-    :return:
+    Seperate dataset into parts with percentages specified in percentage_of_dataset
+    :param dataset: torch Dataset to be split
+    :param percentage_of_dataset: list or numpy array with percentage of each split
+    :return: torch subsets
     """
+    if np.array(percentage_of_dataset).sum() != 1:
+        Warning("The provided percentages don't add up to 1")
+        percentage_of_dataset = (
+            np.array(percentage_of_dataset) / np.array(percentage_of_dataset).sum()
+        )
+
     size_set = []
+
     for ii in range(len(percentage_of_dataset) - 1):
         size_set.append(int(percentage_of_dataset[ii] * len(dataset)))
+
+    # Add last element so that all samples are used
     size_set.append(int(len(dataset) - np.array(size_set).sum()))
+
     split_datasets = torch.utils.data.random_split(dataset, size_set)
     return split_datasets
 
 
 def set_prop_dataset(datasets, targets, balance):
     """
-
+    Creates datasets with a given balance of classes
     :param datasets:
     :param targets:
     :param balance:
