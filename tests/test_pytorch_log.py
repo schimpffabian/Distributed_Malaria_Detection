@@ -2,9 +2,17 @@ import sys
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+from src.auxiliaries import create_test_img
+
+# from src.pytorch_log import log
 
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + "/../")
+
+
+def test_1():
+    test_img, center, radius = create_test_img()
+    assert True
 
 
 if __name__ == "__main__":

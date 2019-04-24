@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from math import sqrt, floor
 from skimage.feature import blob_log
+from src.auxiliaries import create_test_img
 import timeit
 
 
@@ -101,16 +102,19 @@ def log(img, min_sigma=5, max_sigma=5, num_sigma=1, exclude_borders=True):
     )
     x_max = maxpooling(x_gauss)
 
-    x_gauss = torch.squeeze(x_gauss).data.numpy()
-    x_max = torch.squeeze(x_max).data.numpy()
-    maxima = (x_gauss == x_max) * 1
+    # maxima = torch.eq(x_max, x_gauss)
+    # indices = (torch.squeeze(maxima) == 1).nonzero()
+
+    x_gauss_np = torch.squeeze(x_gauss).data.numpy()
+    x_max_np = torch.squeeze(x_max).data.numpy()
+    maxima_np = (x_gauss_np == x_max_np) * 1
 
     if num_filters > 1:
-        sigma_idx, x, y = np.where(maxima == 1)
+        sigma_idx, x, y = np.where(maxima_np == 1)
         # print(sigma_idx)
         sigma = [sigma_vec[i] for i in sigma_idx]
     elif num_filters == 1:
-        x, y = np.where(maxima == 1)
+        x, y = np.where(maxima_np == 1)
         sigma = [sigma_vec[0] for i in range(len(x))]
 
     x_val = []
@@ -137,36 +141,16 @@ def log(img, min_sigma=5, max_sigma=5, num_sigma=1, exclude_borders=True):
 
 
 # https://discuss.pytorch.org/t/changing-the-weights-of-conv2d/22992/14
-def benchmark_log():
+def benchmark_log(num_runs=1):
     """
 
     """
-    num_runs = 1
+
     time_pt_log = 0
     time_sk_log = 0
 
     for ii in range(num_runs):
-        # create_test_image
-        test_img = np.zeros([200, 200])
-
-        num_points = 100
-
-        for ii in range(num_points):
-            if ii == 0:
-                center = np.array(
-                    [int(test_img.shape[0] / 2), int(test_img.shape[1] / 2)]
-                )
-                radius = 5
-            else:
-                center = np.random.randint(
-                    low=0, high=int(test_img.shape[0]), size=(1, 2)
-                )
-                radius = np.random.randint(low=1, high=10)
-
-            for ii in range(test_img.shape[0]):
-                for jj in range(test_img.shape[1]):
-                    if np.linalg.norm(np.array([ii, jj]) - center) < radius:
-                        test_img[ii, jj] = 255
+        test_img, bla, blub = create_test_img(size=(10, 10), num_points=4)
 
         fig, axes = plt.subplots(3, 1, figsize=(3, 3))
         ax = axes.ravel()

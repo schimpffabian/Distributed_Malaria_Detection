@@ -167,46 +167,56 @@ def run_t(model, device, test_loader, loss, secure_evaluation=False):
     :param loss:
     """
     model.eval()
-
     test_loss = 0
     correct = 0
+    correct_encoded = 0
     num_predictions = 0
 
     with torch.no_grad():
         for data, target in test_loader:
             batch_size = len(target)
-            data, target = data.to(device), target.to(device)
-            prediction = model(data)
-            test_loss += loss(prediction, target)
-            pred = prediction.argmax(
-                dim=1, keepdim=True
-            )  # get the index of the max log-probability
-
-            correct += pred.eq(target.view_as(pred)).sum().item()
             num_predictions += batch_size
 
-            if secure_evaluation:
-                correct_decoded = correct.copy().get().float_precision().long().item()
+            if not secure_evaluation:
+                data, target = data.to(device), target.to(device)
 
-    test_loss /= len(test_loader.dataset)
+            prediction = model(data)
 
-    if hasattr(test_loader, "dataset"):
-        print(
-            "\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n".format(
-                test_loss,
-                correct,
-                len(test_loader.dataset),
-                100.0 * correct / len(test_loader.dataset),
-            )
-        )
-    else:
-        print(
-            "Test set: Accuracy: {}/{} ({:.0f}%)".format(
-                correct_decoded,
-                num_predictions,
-                100.0 * correct_decoded / num_predictions,
-            )
-        )
+            if not secure_evaluation:
+                test_loss += loss(prediction, target)
+
+                pred = prediction.argmax(
+                    dim=1, keepdim=True
+                )  # get the index of the max log-probability
+
+                correct += pred.eq(target.view_as(pred)).sum().item()
+
+                test_loss /= len(test_loader.dataset)
+
+                if hasattr(test_loader, "dataset"):
+                    print(
+                        "\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n".format(
+                            test_loss,
+                            correct,
+                            len(test_loader.dataset),
+                            100.0 * correct / len(test_loader.dataset),
+                        )
+                    )
+
+            else:
+                pred = prediction.argmax(dim=1)
+                correct_encoded += pred.eq(target.view_as(pred)).sum()
+                correct_decoded = (
+                    correct_encoded.copy().get().float_precision().long().item()
+                )
+
+                print(
+                    "Test set: Accuracy: {}/{} ({:.0f}%)".format(
+                        correct_decoded,
+                        num_predictions,
+                        100.0 * correct_decoded / num_predictions,
+                    )
+                )
 
 
 def get_images(path):
@@ -226,3 +236,32 @@ def rgb2gray(rgb):
     """
     transform_factor = np.array([0.2989, 0.5870, 0.1140]).reshape((3, 1))
     return rgb @ transform_factor
+
+
+def create_test_img(size=(200, 200), num_points=100, radius_min=1, radius_max=10):
+    """
+    Creates randomly distributed bright dots on black background
+    :param size:        (tuple) dimensions of test image
+    :param num_points:  (int) number of bright spots
+    :param radius_min:  (int) minimum radius for bright spots
+    :param radius_max:  (int) maximum radius for bright spots
+    :return: test_img (ndarray), center_list (list), radius_list (list)
+    """
+
+    test_img = np.zeros(list(size))
+    radius_list = []
+    center_list = []
+
+    for point_nr in range(num_points):
+        center = np.random.randint(low=0, high=int(test_img.shape[0]), size=(1, 2))
+        center_list.append(center)
+
+        radius = np.random.randint(low=radius_min, high=radius_max)
+        radius_list.append(radius)
+
+        for ii in range(test_img.shape[0]):
+            for jj in range(test_img.shape[1]):
+                if np.linalg.norm(np.array([ii, jj]) - center) < radius:
+                    test_img[ii, jj] = 255
+
+    return test_img, center_list, radius_list

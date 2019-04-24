@@ -1,4 +1,3 @@
-import syft as sy  # <-- NEW: import the Pysyft library
 import torch
 import torch.optim as optim
 import torch.nn as nn
@@ -6,7 +5,9 @@ import numpy as np
 from torch.utils.data import Dataset
 from src.dataloader import create_dataset, split_dataset, get_data_augmentation
 from src.models.Custom_CNN import Simple_CNN
+from src.models.Custom_CNN import Simple_CNN2
 from src.auxiliaries import run_t, train
+import syft as sy  # <-- NEW: import the Pysyft library
 
 
 class DatasetFromSubset(Dataset):
@@ -121,7 +122,7 @@ def simple_federated_model():
         run_t(model, device, test_loader, loss)
 
 
-def secure_evaluation():
+def secure_evaluation(img_size=28):
     """
     https://blog.openmined.org/encrypted-deep-learning-classification-with-pysyft/
     """
@@ -136,21 +137,17 @@ def secure_evaluation():
     filderklinik = sy.VirtualWorker(hook, id="fikli")
     crypto_provider = sy.VirtualWorker(hook, id="crypto_provider")
 
-    train_set, test_set = create_federated_dataset()
+    train_set, test_set = create_federated_dataset(img_size=img_size)
     test_loader = torch.utils.data.DataLoader(test_set, batch_size=42, shuffle=True)
 
-    model = Simple_CNN()
-    model.load_state_dict(torch.load("./models/custom_cnn_e10_size_48.pt"))
-    model = model.float()
-    device = torch.device("cuda" if use_cuda else "cpu")
+    model = Simple_CNN2(img_size)
+    # model.load_state_dict(torch.load("./models/custom_cnn_e10_size_48.pt"))
 
-    loss = nn.CrossEntropyLoss()
+    device = torch.device("cuda" if use_cuda else "cpu")
+    # loss = F.nll_loss()
+    loss = nn.NLLLoss()
 
     # Changes for secure evaluation
-    model.fix_precision().share(
-        katherienhospital, filderklinik, crypto_provider=crypto_provider
-    )
-
     private_test_loader = []
     for data, target in test_loader:
         pass
@@ -164,6 +161,11 @@ def secure_evaluation():
                 ),
             )
         )
+
+    model.fix_precision().share(
+        katherienhospital, filderklinik, crypto_provider=crypto_provider
+    )
+
     run_t(model, device, private_test_loader, loss, secure_evaluation=True)
 
 

@@ -70,3 +70,22 @@ class Simple_CNN(nn.Module):
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
         return F.log_softmax(x, dim=1)
+
+
+class Simple_CNN2(nn.Module):
+    def __init__(self, img_size):
+        super(Simple_CNN2, self).__init__()
+        self.img_size = img_size
+
+        self.fc1 = nn.Linear(img_size ** 2 * 3, 500)
+        self.fc2 = nn.Linear(500, 500)
+        self.fc3 = nn.Linear(500, 2)
+
+    def forward(self, x):
+        x = x.view(-1, 3 * self.img_size ** 2)
+        x = self.fc1(x)
+        x = F.relu(x)
+        x = self.fc2(x)
+        x = F.relu(x)
+        x = self.fc3(x)
+        return x
