@@ -1,0 +1,198 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Welcome to Distributed_Malaria_Detection’s documentation! &#8212; Distributed_Malaria_Detection 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-src.dataloader">
+<span id="welcome-to-distributed-malaria-detection-s-documentation"></span><h1>Welcome to Distributed_Malaria_Detection’s documentation!<a class="headerlink" href="#module-src.dataloader" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="src.dataloader.create_dataloaders">
+<code class="descclassname">src.dataloader.</code><code class="descname">create_dataloaders</code><span class="sig-paren">(</span><em>batchsize=28, img_size=28, path='../data/Classification', random_background=False, num_workers=0, percentage_of_dataset=array([0.75, 0.2 , 0.05]), balance=array([[0.5, 0.5],        [0.5, 0.5],        [0.5, 0.5]])</em><span class="sig-paren">)</span><a class="headerlink" href="#src.dataloader.create_dataloaders" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batchsize</strong> – </p></li>
+<li><p><strong>img_size</strong> – </p></li>
+<li><p><strong>path</strong> – </p></li>
+<li><p><strong>random_background</strong> – </p></li>
+<li><p><strong>num_workers</strong> – </p></li>
+<li><p><strong>percentage_of_dataset</strong> – </p></li>
+<li><p><strong>balance</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dataloader.create_dataset">
+<code class="descclassname">src.dataloader.</code><code class="descname">create_dataset</code><span class="sig-paren">(</span><em>path</em>, <em>data_augmentation</em><span class="sig-paren">)</span><a class="headerlink" href="#src.dataloader.create_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience function for this project
+:param path: str path to root directory containing folders with samples for each class
+:param data_augmentation: torch transforms object
+:return: torch dataset</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dataloader.get_data_augmentation">
+<code class="descclassname">src.dataloader.</code><code class="descname">get_data_augmentation</code><span class="sig-paren">(</span><em>random_background</em>, <em>img_size</em>, <em>dark_background=True</em><span class="sig-paren">)</span><a class="headerlink" href="#src.dataloader.get_data_augmentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standard composed transformations for data augmentation
+:param random_background: Bool - Randomize background
+:param img_size: Scales input images to square img_size
+:param dark_background: Bool - True - background has val 0 otherwise val 255
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dataloader.get_labels_and_class_counts">
+<code class="descclassname">src.dataloader.</code><code class="descname">get_labels_and_class_counts</code><span class="sig-paren">(</span><em>labels_list</em><span class="sig-paren">)</span><a class="headerlink" href="#src.dataloader.get_labels_and_class_counts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the counts of all unique classes.
+:param labels_list: list or ndarray with labels
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dataloader.randomize_background">
+<code class="descclassname">src.dataloader.</code><code class="descname">randomize_background</code><span class="sig-paren">(</span><em>x</em>, <em>dark_background=True</em><span class="sig-paren">)</span><a class="headerlink" href="#src.dataloader.randomize_background" title="Permalink to this definition">¶</a></dt>
+<dd><p>Since images in the malaria datasets have default backgrounds around the cells and LIME
+indicates that NNs use the backgrounds shape to make predictions
+:param x: torch.tensor
+:param dark_background: Bool value of background True - 0,False - 255
+:return: Image with ranomized input</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dataloader.resample">
+<code class="descclassname">src.dataloader.</code><code class="descname">resample</code><span class="sig-paren">(</span><em>target_list</em>, <em>imbal_class_prop</em><span class="sig-paren">)</span><a class="headerlink" href="#src.dataloader.resample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function adapted from ptrblck’s PyTorch fork
+<a class="reference external" href="https://github.com/ptrblck/tutorials/blob/imbalanced_tutorial/intermediate_source/imbalanced_data_tutorial.py#L297">https://github.com/ptrblck/tutorials/blob/imbalanced_tutorial/intermediate_source/imbalanced_data_tutorial.py#L297</a>
+Resample the indices to create an artificially imbalanced dataset.
+:param target_list
+:param imbal_class_prop
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dataloader.set_prop_dataset">
+<code class="descclassname">src.dataloader.</code><code class="descname">set_prop_dataset</code><span class="sig-paren">(</span><em>datasets</em>, <em>targets</em>, <em>balance</em><span class="sig-paren">)</span><a class="headerlink" href="#src.dataloader.set_prop_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates datasets with a given balance of classes
+:param datasets:
+:param targets:
+:param balance:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.dataloader.split_dataset">
+<code class="descclassname">src.dataloader.</code><code class="descname">split_dataset</code><span class="sig-paren">(</span><em>dataset</em>, <em>percentage_of_dataset</em><span class="sig-paren">)</span><a class="headerlink" href="#src.dataloader.split_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Seperate dataset into parts with percentages specified in percentage_of_dataset
+:param dataset: torch Dataset to be split
+:param percentage_of_dataset: list or numpy array with percentage of each split
+:return: torch subsets</p>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">Distributed_Malaria_Detection</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, fasc.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
