@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Auxiliary Funcitons &#8212; Distributed_Malaria_Detection 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Blob Detection" href="blob_detection.html" />
+    <link rel="prev" title="Welcome to Distributed_Malaria_Detection’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-src.auxiliaries">
+<span id="auxiliary-funcitons"></span><h1>Auxiliary Funcitons<a class="headerlink" href="#module-src.auxiliaries" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="src.auxiliaries.create_test_img">
+<code class="descclassname">src.auxiliaries.</code><code class="descname">create_test_img</code><span class="sig-paren">(</span><em>size=(200</em>, <em>200)</em>, <em>num_points=100</em>, <em>radius_min=1</em>, <em>radius_max=10</em><span class="sig-paren">)</span><a class="headerlink" href="#src.auxiliaries.create_test_img" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates randomly distributed bright dots on black background
+:param size:        (tuple) dimensions of test image
+:param num_points:  (int) number of bright spots
+:param radius_min:  (int) minimum radius for bright spots
+:param radius_max:  (int) maximum radius for bright spots
+:return: test_img (ndarray), center_list (list), radius_list (list)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.auxiliaries.get_images">
+<code class="descclassname">src.auxiliaries.</code><code class="descname">get_images</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#src.auxiliaries.get_images" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.auxiliaries.initialize_model">
+<code class="descclassname">src.auxiliaries.</code><code class="descname">initialize_model</code><span class="sig-paren">(</span><em>model_name</em>, <em>num_classes</em>, <em>feature_extract</em>, <em>use_pretrained=True</em><span class="sig-paren">)</span><a class="headerlink" href="#src.auxiliaries.initialize_model" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_name</strong> – </p></li>
+<li><p><strong>num_classes</strong> – </p></li>
+<li><p><strong>feature_extract</strong> – </p></li>
+<li><p><strong>use_pretrained</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.auxiliaries.rgb2gray">
+<code class="descclassname">src.auxiliaries.</code><code class="descname">rgb2gray</code><span class="sig-paren">(</span><em>rgb</em><span class="sig-paren">)</span><a class="headerlink" href="#src.auxiliaries.rgb2gray" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rgb</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.auxiliaries.run_t">
+<code class="descclassname">src.auxiliaries.</code><code class="descname">run_t</code><span class="sig-paren">(</span><em>model</em>, <em>device</em>, <em>test_loader</em>, <em>loss</em>, <em>secure_evaluation=False</em><span class="sig-paren">)</span><a class="headerlink" href="#src.auxiliaries.run_t" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – </p></li>
+<li><p><strong>device</strong> – </p></li>
+<li><p><strong>test_loader</strong> – </p></li>
+<li><p><strong>loss</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.auxiliaries.set_parameter_requires_grad">
+<code class="descclassname">src.auxiliaries.</code><code class="descname">set_parameter_requires_grad</code><span class="sig-paren">(</span><em>model</em>, <em>feature_extracting</em><span class="sig-paren">)</span><a class="headerlink" href="#src.auxiliaries.set_parameter_requires_grad" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – </p></li>
+<li><p><strong>feature_extracting</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.auxiliaries.train">
+<code class="descclassname">src.auxiliaries.</code><code class="descname">train</code><span class="sig-paren">(</span><em>model</em>, <em>device</em>, <em>train_loader</em>, <em>optimizer</em>, <em>epoch</em>, <em>loss</em>, <em>federated=False</em><span class="sig-paren">)</span><a class="headerlink" href="#src.auxiliaries.train" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – </p></li>
+<li><p><strong>device</strong> – </p></li>
+<li><p><strong>train_loader</strong> – </p></li>
+<li><p><strong>optimizer</strong> – </p></li>
+<li><p><strong>epoch</strong> – </p></li>
+<li><p><strong>loss</strong> – </p></li>
+<li><p><strong>federated</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Distributed_Malaria_Detection</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Auxiliary Funcitons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blob_detection.html">Blob Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dataloader.html">Dataloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="federated_training.html">Federated Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pytorch_log.html">LoG with PyTorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="licence.html">LICENCE</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to Distributed_Malaria_Detection’s documentation!</a></li>
+      <li>Next: <a href="blob_detection.html" title="next chapter">Blob Detection</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, fasc.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/auxiliaries.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

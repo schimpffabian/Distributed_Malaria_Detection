@@ -21,6 +21,7 @@ def get_cell_image(x, y, r, img):
     """
     Receives x, y and the respective radius of a a blob in an image, returns rectangular image with
     blob inside
+
     :param x:
     :param y:
     :param r:

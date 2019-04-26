@@ -5,12 +5,25 @@
 
 Welcome to Distributed_Malaria_Detection's documentation!
 =========================================================
-.. automodule:: src.dataloader
-    :members:
+
+Introduction
+^^^^^^^^^^^^
+This is the documentation for https://github.com/2fasc/Distributed_Malaria_Detection.
+Please don't hesitate to get in touch with there.
+
+References
+^^^^^^^^^^
+
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
+   auxiliaries
+   blob_detection
+   dataloader
+   federated_training
+   pytorch_log
+
+   licence
 
 
 Indices and tables

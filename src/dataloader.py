@@ -10,6 +10,7 @@ def randomize_background(x, dark_background=True):
     """
     Since images in the malaria datasets have default backgrounds around the cells and LIME
     indicates that NNs use the backgrounds shape to make predictions
+
     :param x: torch.tensor
     :param dark_background: Bool value of background True - 0,False - 255
     :return: Image with ranomized input
@@ -36,6 +37,7 @@ def randomize_background(x, dark_background=True):
 def get_data_augmentation(random_background, img_size, dark_background=True):
     """
     Standard composed transformations for data augmentation
+
     :param random_background: Bool - Randomize background
     :param img_size: Scales input images to square img_size
     :param dark_background: Bool - True - background has val 0 otherwise val 255
@@ -69,6 +71,7 @@ def get_data_augmentation(random_background, img_size, dark_background=True):
 def get_labels_and_class_counts(labels_list):
     """
     Calculates the counts of all unique classes.
+
     :param labels_list: list or ndarray with labels
     :return:
     """
@@ -83,6 +86,7 @@ def resample(target_list, imbal_class_prop):
     Function adapted from ptrblck's PyTorch fork
     https://github.com/ptrblck/tutorials/blob/imbalanced_tutorial/intermediate_source/imbalanced_data_tutorial.py#L297
     Resample the indices to create an artificially imbalanced dataset.
+
     :param target_list
     :param imbal_class_prop
     :return:
@@ -111,6 +115,7 @@ def resample(target_list, imbal_class_prop):
 def create_dataset(path, data_augmentation):
     """
     Convenience function for this project
+
     :param path: str path to root directory containing folders with samples for each class
     :param data_augmentation: torch transforms object
     :return: torch dataset
@@ -122,6 +127,7 @@ def create_dataset(path, data_augmentation):
 def split_dataset(dataset, percentage_of_dataset):
     """
     Seperate dataset into parts with percentages specified in percentage_of_dataset
+
     :param dataset: torch Dataset to be split
     :param percentage_of_dataset: list or numpy array with percentage of each split
     :return: torch subsets
@@ -147,6 +153,7 @@ def split_dataset(dataset, percentage_of_dataset):
 def set_prop_dataset(datasets, targets, balance):
     """
     Creates datasets with a given balance of classes
+
     :param datasets:
     :param targets:
     :param balance:

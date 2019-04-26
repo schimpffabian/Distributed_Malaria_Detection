@@ -1,0 +1,153 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>LoG with PyTorch &#8212; Distributed_Malaria_Detection 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="LICENCE" href="licence.html" />
+    <link rel="prev" title="Blob Detection" href="blob_detection.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-src.pytorch_log">
+<span id="log-with-pytorch"></span><h1>LoG with PyTorch<a class="headerlink" href="#module-src.pytorch_log" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="src.pytorch_log.benchmark_log">
+<code class="descclassname">src.pytorch_log.</code><code class="descname">benchmark_log</code><span class="sig-paren">(</span><em>num_runs=1</em><span class="sig-paren">)</span><a class="headerlink" href="#src.pytorch_log.benchmark_log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="src.pytorch_log.log">
+<code class="descclassname">src.pytorch_log.</code><code class="descname">log</code><span class="sig-paren">(</span><em>img</em>, <em>min_sigma=5</em>, <em>max_sigma=5</em>, <em>num_sigma=1</em>, <em>exclude_borders=True</em><span class="sig-paren">)</span><a class="headerlink" href="#src.pytorch_log.log" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img</strong> – </p></li>
+<li><p><strong>min_sigma</strong> – </p></li>
+<li><p><strong>max_sigma</strong> – </p></li>
+<li><p><strong>num_sigma</strong> – </p></li>
+<li><p><strong>exclude_borders</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.pytorch_log.log_kernel">
+<code class="descclassname">src.pytorch_log.</code><code class="descname">log_kernel</code><span class="sig-paren">(</span><em>kernel_size</em>, <em>sigma_start=1.0</em>, <em>sigma_stop=10.0</em>, <em>num_sigma_steps=10</em>, <em>lin_sigma=True</em><span class="sig-paren">)</span><a class="headerlink" href="#src.pytorch_log.log_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kernel_size</strong> – </p></li>
+<li><p><strong>sigma_start</strong> – </p></li>
+<li><p><strong>sigma_stop</strong> – </p></li>
+<li><p><strong>num_sigma_steps</strong> – </p></li>
+<li><p><strong>lin_sigma</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Distributed_Malaria_Detection</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dataloader.html">Dataloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blob_detection.html">Blob Detection</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">LoG with PyTorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="licence.html">LICENCE</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="blob_detection.html" title="previous chapter">Blob Detection</a></li>
+      <li>Next: <a href="licence.html" title="next chapter">LICENCE</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, fasc.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/pytorch_log.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
