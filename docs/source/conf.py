@@ -66,6 +66,9 @@ html_static_path = ["_static"]
 # Master
 master_doc = "index"
 
+# Theme
+html_theme = "sphinx_rtd_theme"
+
 # Exclude imports
 autodoc_mock_imports = [
     "torch",
