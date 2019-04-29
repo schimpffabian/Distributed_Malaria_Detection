@@ -64,7 +64,14 @@ html_theme = "alabaster"
 html_static_path = ["_static"]
 
 # Exclude imports
-autodoc_mock_imports = ["torch", "skimage", "torchvision", "syft"]
+autodoc_mock_imports = [
+    "torch",
+    "skimage",
+    "torchvision",
+    "syft",
+    "numpy",
+    "matplotlib",
+]
 # MOCK_MODULES =
 # ['numpy', 'scipy', 'matplotlib', 'matplotlib.pyplot', 'scipy.interpolate']
 # for mod_name in MOCK_MODULES:
