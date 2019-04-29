@@ -63,6 +63,9 @@ html_theme = "alabaster"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
+# Master
+master_doc = "index"
+
 # Exclude imports
 autodoc_mock_imports = [
     "torch",
@@ -72,10 +75,3 @@ autodoc_mock_imports = [
     "numpy",
     "matplotlib",
 ]
-# MOCK_MODULES =
-
-# Master
-master_doc = "index"
-# ['numpy', 'scipy', 'matplotlib', 'matplotlib.pyplot', 'scipy.interpolate']
-# for mod_name in MOCK_MODULES:
-# sys.modules[mod_name] = mock.Mock()
