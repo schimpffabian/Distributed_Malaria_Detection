@@ -14,8 +14,8 @@
     <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="LICENCE" href="licence.html" />
-    <link rel="prev" title="Welcome to Distributed_Malaria_Detection’s documentation!" href="index.html" />
+    <link rel="next" title="Federated Training" href="federated_training.html" />
+    <link rel="prev" title="Blob Detection" href="blob_detection.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -36,7 +36,7 @@
 <span id="dataloader"></span><h1>Dataloader<a class="headerlink" href="#module-src.dataloader" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="src.dataloader.create_dataloaders">
-<code class="descclassname">src.dataloader.</code><code class="descname">create_dataloaders</code><span class="sig-paren">(</span><em>batchsize=28, img_size=28, path='../data/Classification', random_background=False, num_workers=0, percentage_of_dataset=array([0.75, 0.2 , 0.05]), balance=array([[0.5, 0.5],        [0.5, 0.5],        [0.5, 0.5]])</em><span class="sig-paren">)</span><a class="headerlink" href="#src.dataloader.create_dataloaders" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">src.dataloader.</code><code class="descname">create_dataloaders</code><span class="sig-paren">(</span><em>batchsize=28</em>, <em>img_size=28</em>, <em>path='../data/Classification'</em>, <em>random_background=False</em>, <em>num_workers=0</em>, <em>percentage_of_dataset=numpy.array</em>, <em>balance=numpy.array</em><span class="sig-paren">)</span><a class="headerlink" href="#src.dataloader.create_dataloaders" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -188,7 +188,11 @@ Resample the indices to create an artificially imbalanced dataset.</p>
 
 <h3>Navigation</h3>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="auxiliaries.html">Auxiliary Funcitons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blob_detection.html">Blob Detection</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Dataloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="federated_training.html">Federated Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pytorch_log.html">LoG with PyTorch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="licence.html">LICENCE</a></li>
 </ul>
 
@@ -196,8 +200,8 @@ Resample the indices to create an artificially imbalanced dataset.</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Welcome to Distributed_Malaria_Detection’s documentation!</a></li>
-      <li>Next: <a href="licence.html" title="next chapter">LICENCE</a></li>
+      <li>Previous: <a href="blob_detection.html" title="previous chapter">Blob Detection</a></li>
+      <li>Next: <a href="federated_training.html" title="next chapter">Federated Training</a></li>
   </ul></li>
 </ul>
 </div>
