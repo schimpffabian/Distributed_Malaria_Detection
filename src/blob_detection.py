@@ -70,6 +70,8 @@ def create_blob_sequence(image):
     :param image:
     :return:
     """
+
+    # ToDo: Add https://www.learnopencv.com/blob-detection-using-opencv-python-c/
     blobs_log = blob_log(image, min_sigma=15, max_sigma=40, num_sigma=10, overlap=1)
 
     # Compute radii in the 3rd column.

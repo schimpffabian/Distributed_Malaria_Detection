@@ -1,3 +1,7 @@
+"""
+Auxiliary functions
+"""
+
 import torch
 import torch.nn as nn
 from torchvision import models
@@ -11,9 +15,10 @@ log_interval = 10
 
 def set_parameter_requires_grad(model, feature_extracting):
     """
+    Function for model finetuning to freeze feature extractor and retrain last layers
 
-    :param model:
-    :param feature_extracting:
+    :param model: PyTorch model child of torch.nn.Module
+    :param feature_extracting: (Bool) True disables gradients
     """
     #  Source: https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.htmlS
     if feature_extracting:
@@ -23,16 +28,16 @@ def set_parameter_requires_grad(model, feature_extracting):
 
 def initialize_model(model_name, num_classes, feature_extract, use_pretrained=True):
     """
+    Source: https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.html
+    Initialize these variables which will be set in this if statement. Each of these
+    variables is model specific.
 
-    :param model_name:
-    :param num_classes:
-    :param feature_extract:
-    :param use_pretrained:
+    :param model_name: (str) model to be loaded
+    :param num_classes: (int) number of classes
+    :param feature_extract: (bool) deactivate gradients
+    :param use_pretrained: (bool) load pretrained weights
     :return:
     """
-    #  Source: https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.html
-    # Initialize these variables which will be set in this if statement. Each of these
-    #   variables is model specific.
     model_ft = None
     input_size = 0
 
@@ -106,14 +111,15 @@ def initialize_model(model_name, num_classes, feature_extract, use_pretrained=Tr
 
 def train(model, device, train_loader, optimizer, epoch, loss, federated=False):
     """
+    Training function for NNs
 
-    :param model:
-    :param device:
-    :param train_loader:
-    :param optimizer:
-    :param epoch:
-    :param loss:
-    :param federated:
+    :param model: PyTorch model child of torch.nn.Module
+    :param device: (str) device to run the model on
+    :param train_loader: (torch.utils.data.DataLoader()) Dataloader
+    :param optimizer: Optimizer from torch.optim
+    :param epoch: (int) number of epoches to train
+    :param loss: Loss function from torch.nn
+    :param federated: (bool) federated training
     """
     model.train()
     for batch_idx, (data, target) in enumerate(train_loader):
@@ -160,11 +166,12 @@ def train(model, device, train_loader, optimizer, epoch, loss, federated=False):
 
 def run_t(model, device, test_loader, loss, secure_evaluation=False):
     """
+    Test function for NNs
 
-    :param model:
-    :param device:
-    :param test_loader:
-    :param loss:
+    :param model: PyTorch model child of torch.nn.Module
+    :param device: (str) device to run the model on
+    :param test_loader: (torch.utils.data.DataLoader()) Dataloader
+    :param loss: Loss function from torch.nn
     """
     model.eval()
     test_loss = 0
@@ -221,18 +228,20 @@ def run_t(model, device, test_loader, loss, secure_evaluation=False):
 
 def get_images(path):
     """
+    Return all images in path as list of strings
 
-    :param path:
-    :return:
+    :param path: (str) path to image directory
+    :return: list of images in path
     """
     return [f for f in listdir(path) if isfile(join(path, f))]
 
 
 def rgb2gray(rgb):
     """
+    Converts RGB images to black and white
 
-    :param rgb:
-    :return:
+    :param rgb: (ndarray) RGB image - shape: (n, m, 3)
+    :return: (ndarray) image - shape: (n, m, 3)
     """
     transform_factor = np.array([0.2989, 0.5870, 0.1140]).reshape((3, 1))
     return rgb @ transform_factor
