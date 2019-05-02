@@ -16,7 +16,7 @@ Click==7.0
 cloudpickle==0.8.1
 commonmark==0.8.1
 coverage==4.5.3
-cryptography==2.6.1
+cryptography==2.5
 cycler==0.10.0
 cytoolz==0.9.0.1
 dask==1.1.5

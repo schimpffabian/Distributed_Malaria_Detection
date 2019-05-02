@@ -247,22 +247,29 @@ def rgb2gray(rgb):
     return rgb @ transform_factor
 
 
-def create_test_img(size=(200, 200), num_points=100, radius_min=1, radius_max=10):
+def create_test_img(
+    size=(200, 200), num_points=100, radius_min=1, radius_max=10, random_seed=42
+):
     """
     Creates randomly distributed bright dots on black background
     :param size:        (tuple) dimensions of test image
     :param num_points:  (int) number of bright spots
     :param radius_min:  (int) minimum radius for bright spots
     :param radius_max:  (int) maximum radius for bright spots
+    :param random_seed: (int) random seed
     :return: test_img (ndarray), center_list (list), radius_list (list)
     """
 
     test_img = np.zeros(list(size))
     radius_list = []
     center_list = []
+    np.random.seed(random_seed)
 
     for point_nr in range(num_points):
-        center = np.random.randint(low=0, high=int(test_img.shape[0]), size=(1, 2))
+        center_0 = np.random.randint(low=0, high=int(test_img.shape[0]))
+        center_1 = np.random.randint(low=0, high=int(test_img.shape[1]))
+
+        center = [center_0, center_1]
         center_list.append(center)
 
         radius = np.random.randint(low=radius_min, high=radius_max)
