@@ -39,12 +39,18 @@ def get_accuracy(kd_tree, blob_list, center_list, threshold):
         return [0, 1, 0]
 
 
-def compare_blob_detection(num_runs=4, threshold=3):
+def compare_blob_detection(num_runs=15, threshold=3):
     """
     Compare speed and detection rate of different standard tools
 
     :param num_runs: Number of test runs to be averaged
     :param threshold: max accepted distance between prediction and real center to count as correct
+
+    Preliminary results:
+    Laplacian of Gaussian:  	 0.00922 s, TP: 0.33,	 DC: 0.59
+    Difference of Gaussian: 	 0.00314 s, TP: 0.52,	 DC: 0.63
+    Difference of Hessian:  	 4.68443 s, TP: 0.15,	 DC: 0.85
+    Simple Blob Detector:   	 0.00060 s, TP: 0.86,	 DC: 0.63
     """
     log_time = 0
     dog_time = 0
@@ -58,7 +64,7 @@ def compare_blob_detection(num_runs=4, threshold=3):
 
     for ii in range(num_runs):
         image, center_list, radius_list = create_test_img(
-            size=(75, 75), num_points=50, radius_min=3, radius_max=10, random_seed=ii
+            size=(75, 75), num_points=10, radius_min=3, radius_max=10, random_seed=ii
         )
         # Build KD Tree for later evaluation
         center_kd_tree = KDTree(center_list)
@@ -81,28 +87,36 @@ def compare_blob_detection(num_runs=4, threshold=3):
 
         # Difference of Hessian
         start_doh = timeit.default_timer()
-        blobs_doh = blob_doh(image, min_sigma=1, max_sigma=3, overlap=1)
+        blobs_doh = blob_doh(image, min_sigma=1, max_sigma=3)
         stop_doh = timeit.default_timer()
         doh_time += stop_doh - start_doh
         doh_acc.append(get_accuracy(center_kd_tree, blobs_doh, center_list, threshold))
 
         # Simple Blob Detector opencv
-        is_v2 = cv2.__version__.startswith("2.")
-        if is_v2:
-            detector = cv2.SimpleBlobDetector()
-        else:
-            detector = cv2.SimpleBlobDetector_create()
 
         params = cv2.SimpleBlobDetector_Params()
         params.blobColor = 255
+        params.filterByArea = False
+        params.filterByCircularity = False
+        params.filterByConvexity = False
+        # params.maxThreshold = 255
+        # params.minThreshold = 50
+
+        is_v2 = cv2.__version__.startswith("2.")
+        if is_v2:
+            detector = cv2.SimpleBlobDetector(params)
+        else:
+            detector = cv2.SimpleBlobDetector_create(params)
 
         image_8bit = image.astype("uint8")
 
         start_sbd = timeit.default_timer()
         keypoints = detector.detect(image_8bit)
+        blobs_sbd = cv2.KeyPoint_convert(keypoints)
+        blobs_sbd = np.flip(np.array(blobs_sbd), 1)
         stop_sbd = timeit.default_timer()
         sbd_time += stop_sbd - start_sbd
-        sbd_acc.append(get_accuracy(center_kd_tree, keypoints, center_list, threshold))
+        sbd_acc.append(get_accuracy(center_kd_tree, blobs_sbd, center_list, threshold))
 
     # Average Time over runs
     log_time = log_time / num_runs
