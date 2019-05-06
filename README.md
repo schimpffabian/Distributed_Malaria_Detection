@@ -5,6 +5,7 @@
 [![Documentation Status](https://readthedocs.org/projects/distributed-malaria-detection/badge/?version=latest)](https://distributed-malaria-detection.readthedocs.io/en/latest/?badge=latest)
 [![Maintainability](https://api.codeclimate.com/v1/badges/0ce33bc238607a545955/maintainability)](https://codeclimate.com/github/2fasc/Distributed_Malaria_Detection/maintainability)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/807112c33dc24c60a314411feabf8ef9)](https://www.codacy.com/app/2fasc/Distributed_Malaria_Detection?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=2fasc/Distributed_Malaria_Detection&amp;utm_campaign=Badge_Grade)
+[![Known Vulnerabilities](https://snyk.io/test/github/2fasc/Distributed_Malaria_Detection/badge.svg)](https://snyk.io/test/github/2fasc/Distributed_Malaria_Detection) 
 
 # Distributed_Malaria
 * GPU accelerated object detection algorithms (LoG and possibly DoG) 

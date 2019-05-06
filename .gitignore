@@ -1,5 +1,5 @@
 data/
 pytest_cache/
-idea/
+.idea/
 __pycache__/
 presentation_report/

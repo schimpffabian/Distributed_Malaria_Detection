@@ -1,4 +1,4 @@
-from src.auxiliaries import create_test_img
+from ..auxiliaries import create_test_img
 from skimage.feature import blob_dog, blob_log, blob_doh
 import cv2
 from math import sqrt

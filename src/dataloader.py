@@ -1,4 +1,6 @@
 import torch
+import os
+from pathlib import Path
 import numpy as np
 from torchvision.datasets.folder import ImageFolder
 import torchvision.transforms as transforms
@@ -171,7 +173,7 @@ def set_prop_dataset(datasets, targets, balance):
 def create_dataloaders(
     batchsize=28,
     img_size=28,
-    path="../data/Classification",
+    path=Path("../data/Classification"),
     random_background=False,
     num_workers=0,
     percentage_of_dataset=np.array([0.75, 0.2, 0.05]),

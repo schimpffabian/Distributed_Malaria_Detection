@@ -1,11 +1,20 @@
 import torch
 import torch.optim as optim
 import torch.nn as nn
-from src.auxiliaries import train
-from src.auxiliaries import run_t
-from src.auxiliaries import initialize_model
-from src.dataloader import create_dataloaders
-from src.models.Custom_CNN import Simple_CNN
+import os
+
+try:
+    from src.auxiliaries import train
+    from src.auxiliaries import run_t
+    from src.auxiliaries import initialize_model
+    from src.dataloader import create_dataloaders
+    from src.models.Custom_CNN import Simple_CNN
+except ModuleNotFoundError:
+    from auxiliaries import train
+    from auxiliaries import run_t
+    from auxiliaries import initialize_model
+    from dataloader import create_dataloaders
+    from models.Custom_CNN import Simple_CNN
 
 
 def finetune_model(
@@ -49,19 +58,20 @@ def finetune_model(
     )
 
 
-def main(model=Simple_CNN(), batch_size=64, num_epochs=42, img_size=48, lr=1e-3):
+def custom_classifier(model=Simple_CNN(), batch_size=64, num_epochs=42, img_size=48, lr=1e-3, use_gpu=True):
     """
 
     :param model:
-    :param batch_size:
-    :param num_epochs:
-    :param img_size:
-    :param lr:
+    :param batch_size:  (int) batch size for training
+    :param num_epochs: (int) number of training epochs
+    :param img_size: size of input image
+    :param lr: learning rate typically ~1e-3 - 1e-5
+    :param use_gpu: (bool) use a GPU if available
     """
     # Training settings
     use_cuda = torch.cuda.is_available()
 
-    device = torch.device("cuda" if use_cuda else "cpu")
+    device = torch.device("cuda" if use_cuda and use_gpu else "cpu")
 
     train_loader, test_loader, val_loader = create_dataloaders(
         batchsize=batch_size, img_size=img_size
@@ -76,12 +86,18 @@ def main(model=Simple_CNN(), batch_size=64, num_epochs=42, img_size=48, lr=1e-3)
         train(model, device, train_loader, optimizer, epoch, loss)
         run_t(model, device, test_loader)
 
-    torch.save(
-        model.state_dict(),
-        "./models/custom_cnn_e" + str(num_epochs) + "_size_" + str(img_size) + ".pt",
-    )
+    if os.name != 'nt':
+        torch.save(
+            model.state_dict(),
+            "./models/custom_cnn_e" + str(num_epochs) + "_size_" + str(img_size) + ".pt",
+        )
+    else:
+        torch.save(
+            model.state_dict(),
+            ".\\models\\custom_cnn_e" + str(num_epochs) + "_size_" + str(img_size) + ".pt",
+        )
 
 
 if __name__ == "__main__":
-    main()
+    train_custom_classifier()
     # finetune_model()
