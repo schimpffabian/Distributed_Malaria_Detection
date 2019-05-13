@@ -1,6 +1,7 @@
 import torch
 import torch.optim as optim
 import torch.nn as nn
+from pathlib import Path
 import os
 
 try:
@@ -58,7 +59,8 @@ def finetune_model(
     )
 
 
-def custom_classifier(model=Simple_CNN(), batch_size=64, num_epochs=42, img_size=48, lr=1e-3, use_gpu=True):
+def custom_classifier(model=Simple_CNN(img_size=128), batch_size=256, num_epochs=42, img_size=48, lr=1e-3, use_gpu=True,
+                      random_background=False, name=""):
     """
 
     :param model:
@@ -67,14 +69,16 @@ def custom_classifier(model=Simple_CNN(), batch_size=64, num_epochs=42, img_size
     :param img_size: size of input image
     :param lr: learning rate typically ~1e-3 - 1e-5
     :param use_gpu: (bool) use a GPU if available
+    :param random_background: (bool) randomize uniform background
+    :param name: (str) optionally name the saved state dicts
     """
     # Training settings
     use_cuda = torch.cuda.is_available()
 
     device = torch.device("cuda" if use_cuda and use_gpu else "cpu")
-
+    print(device)
     train_loader, test_loader, val_loader = create_dataloaders(
-        batchsize=batch_size, img_size=img_size
+        batchsize=batch_size, img_size=img_size, random_background=random_background
     )
 
     model = model.to(device)
@@ -84,20 +88,26 @@ def custom_classifier(model=Simple_CNN(), batch_size=64, num_epochs=42, img_size
 
     for epoch in range(1, num_epochs + 1):
         train(model, device, train_loader, optimizer, epoch, loss)
-        run_t(model, device, test_loader)
+        accuracy = run_t(model, device, test_loader, loss)
 
-    if os.name != 'nt':
-        torch.save(
-            model.state_dict(),
-            "./models/custom_cnn_e" + str(num_epochs) + "_size_" + str(img_size) + ".pt",
-        )
+    if random_background:
+        background_extension = "_rand_backgr"
     else:
-        torch.save(
-            model.state_dict(),
-            ".\\models\\custom_cnn_e" + str(num_epochs) + "_size_" + str(img_size) + ".pt",
-        )
+        background_extension = ""
+
+    if name == "":
+        save_name = Path("./models/custom_cnn_e" + str(num_epochs) + "_size_" + str(img_size) + background_extension + ".pt")
+    else:
+        save_name = Path(name + ".pt")
+
+    torch.save(
+        model.state_dict(),
+        save_name,
+    )
+
+    return accuracy
 
 
 if __name__ == "__main__":
-    train_custom_classifier()
+    custom_classifier()
     # finetune_model()

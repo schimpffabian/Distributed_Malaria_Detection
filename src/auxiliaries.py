@@ -10,7 +10,7 @@ from os.path import isfile, join
 import numpy as np
 import copy
 
-log_interval = 10
+log_interval = 40
 
 
 def set_parameter_requires_grad(model, feature_extracting):
@@ -109,7 +109,7 @@ def initialize_model(model_name, num_classes, feature_extract, use_pretrained=Tr
     return model_ft, input_size
 
 
-def train(model, device, train_loader, optimizer, epoch, loss, federated=False):
+def train(model, device, train_loader, optimizer, epoch, loss, federated=False, random_background=False):
     """
     Training function for NNs
 
@@ -120,10 +120,10 @@ def train(model, device, train_loader, optimizer, epoch, loss, federated=False):
     :param epoch: (int) number of epoches to train
     :param loss: Loss function from torch.nn
     :param federated: (bool) federated training
+
     """
     model.train()
     for batch_idx, (data, target) in enumerate(train_loader):
-        print(batch_idx)
         if federated:
             model_backup = copy.deepcopy(model)
         try:
@@ -135,9 +135,9 @@ def train(model, device, train_loader, optimizer, epoch, loss, federated=False):
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad()
         prediction = model(data)
+
         output = loss(prediction, target)
 
-        print("Hi Mom", output.data.numpy())
         output.backward()
         optimizer.step()
         try:
@@ -202,7 +202,7 @@ def run_t(model, device, test_loader, loss, secure_evaluation=False):
 
                 if hasattr(test_loader, "dataset"):
                     print(
-                        "\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n".format(
+                        "Test set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)".format(
                             test_loss,
                             correct,
                             len(test_loader.dataset),
@@ -224,6 +224,11 @@ def run_t(model, device, test_loader, loss, secure_evaluation=False):
                         100.0 * correct_decoded / num_predictions,
                     )
                 )
+
+        if secure_evaluation:
+            return 100 * correct_decoded / num_predictions
+        else:
+            return 100 * correct / len(test_loader.dataset)
 
 
 def get_images(path):

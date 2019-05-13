@@ -91,7 +91,7 @@ def resample(target_list, imbal_class_prop):
 
     :param target_list
     :param imbal_class_prop
-    :return:
+    :return: indices to satisfy the probabilities given in imbal_class_prop
     """
     targets, class_counts = get_labels_and_class_counts(target_list)
     nb_classes = len(imbal_class_prop)
@@ -128,7 +128,7 @@ def create_dataset(path, data_augmentation):
 
 def split_dataset(dataset, percentage_of_dataset):
     """
-    Seperate dataset into parts with percentages specified in percentage_of_dataset
+    Separate dataset into parts with percentages specified in percentage_of_dataset
 
     :param dataset: torch Dataset to be split
     :param percentage_of_dataset: list or numpy array with percentage of each split
@@ -156,10 +156,10 @@ def set_prop_dataset(datasets, targets, balance):
     """
     Creates datasets with a given balance of classes
 
-    :param datasets:
-    :param targets:
-    :param balance:
-    :return:
+    :param datasets: subsets of datasets
+    :param targets: lables of originial e.g. not split dataset
+    :param balance: list of lists containing the wanted probabilities of each class in the given datasets
+    :return: modified datasets
     """
     new_datasets = []
     for ii, dataset in enumerate(datasets):
@@ -172,7 +172,7 @@ def set_prop_dataset(datasets, targets, balance):
 
 def create_dataloaders(
     batchsize=28,
-    img_size=28,
+    img_size=128,
     path=Path("../data/Classification"),
     random_background=False,
     num_workers=0,
@@ -180,15 +180,16 @@ def create_dataloaders(
     balance=np.array([[0.5, 0.5], [0.5, 0.5], [0.5, 0.5]]),
 ):
     """
+    Convenience function to setup dataloaders for experiments
 
-    :param batchsize:
-    :param img_size:
-    :param path:
-    :param random_background:
-    :param num_workers:
-    :param percentage_of_dataset:
-    :param balance:
-    :return:
+    :param batchsize: (int) size of batch
+    :param img_size: (int) size of image - underlying assumption of square images
+    :param path: (str) path to folders containing images
+    :param random_background: (bool) whether to randomize uniform backgrounds or not
+    :param num_workers: (int) number of processes used to move data from RAM to GPU memory
+    :param percentage_of_dataset: (tuple) percentages of each split
+    :param balance: list of lists containing the wanted probabilities of each class in the given datasets
+    :return: torch.utils.dataloader objects
     """
     data_augmentation = get_data_augmentation(random_background, img_size)
 
@@ -213,6 +214,7 @@ def create_dataloaders(
                 batch_size=batchsize,
                 shuffle=True,
                 num_workers=num_workers,
+                pin_memory=True
             )
         )
 

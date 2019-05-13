@@ -3,3 +3,6 @@ pytest_cache/
 .idea/
 __pycache__/
 presentation_report/
+state_dicts/
+*.pt
+logs/
