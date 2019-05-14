@@ -78,7 +78,7 @@ def simple_federated_model():
     """
 
     """
-    epochs = 2
+    epochs = 3
 
     use_cuda = torch.cuda.is_available()
     torch.manual_seed(42)
@@ -101,7 +101,7 @@ def simple_federated_model():
     test_loader = torch.utils.data.DataLoader(test_set, batch_size=42, shuffle=True)
 
     model = Simple_CNN()
-    model.load_state_dict(torch.load("./models/custom_cnn_e10_size_48.pt"))
+    #model.load_state_dict(torch.load("./models/custom_cnn_e10_size_48.pt"))
     model = model.float()
 
     device = torch.device("cuda" if use_cuda else "cpu")
@@ -122,7 +122,7 @@ def simple_federated_model():
         run_t(model, device, test_loader, loss)
 
 
-def secure_evaluation(img_size=28):
+def secure_evaluation(img_size=128):
     """
     https://blog.openmined.org/encrypted-deep-learning-classification-with-pysyft/
     """

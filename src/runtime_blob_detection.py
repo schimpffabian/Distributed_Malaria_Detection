@@ -1,10 +1,11 @@
-from ..auxiliaries import create_test_img
+from auxiliaries import create_test_img
 from skimage.feature import blob_dog, blob_log, blob_doh
 import cv2
 from math import sqrt
 from scipy.spatial import KDTree
 import timeit
 import numpy as np
+from pathlib import Path
 
 
 def get_accuracy(kd_tree, blob_list, center_list, threshold):
@@ -39,23 +40,23 @@ def get_accuracy(kd_tree, blob_list, center_list, threshold):
         return [0, 1, 0]
 
 
-def compare_blob_detection(num_runs=15, threshold=3):
+def compare_blob_detection(num_runs=1, threshold=4):
     """
     Compare speed and detection rate of different standard tools
 
     :param num_runs: Number of test runs to be averaged
     :param threshold: max accepted distance between prediction and real center to count as correct
 
-    Preliminary results:
+    Preliminary results: num_runs=15, threshold=3
     Laplacian of Gaussian:  	 0.00922 s, TP: 0.33,	 DC: 0.59
     Difference of Gaussian: 	 0.00314 s, TP: 0.52,	 DC: 0.63
     Difference of Hessian:  	 4.68443 s, TP: 0.15,	 DC: 0.85
     Simple Blob Detector:   	 0.00060 s, TP: 0.86,	 DC: 0.63
     """
-    log_time = 0
-    dog_time = 0
-    doh_time = 0
-    sbd_time = 0
+    log_time = []
+    dog_time = []
+    doh_time = []
+    sbd_time = []
 
     log_acc = []
     dog_acc = []
@@ -63,6 +64,8 @@ def compare_blob_detection(num_runs=15, threshold=3):
     sbd_acc = []
 
     for ii in range(num_runs):
+        print("Run %.0f" % ii)
+
         image, center_list, radius_list = create_test_img(
             size=(75, 75), num_points=10, radius_min=3, radius_max=10, random_seed=ii
         )
@@ -73,7 +76,7 @@ def compare_blob_detection(num_runs=15, threshold=3):
         start_log = timeit.default_timer()
         blobs_log = blob_log(image, min_sigma=1, max_sigma=3, num_sigma=3, overlap=1)
         stop_log = timeit.default_timer()
-        log_time += stop_log - start_log
+        log_time.append(stop_log - start_log)
         blobs_log[:, 2] = blobs_log[:, 2] * sqrt(2)
         log_acc.append(get_accuracy(center_kd_tree, blobs_log, center_list, threshold))
 
@@ -81,7 +84,7 @@ def compare_blob_detection(num_runs=15, threshold=3):
         start_dog = timeit.default_timer()
         blobs_dog = blob_dog(image, min_sigma=1, max_sigma=3, overlap=1)
         stop_dog = timeit.default_timer()
-        dog_time += stop_dog - start_dog
+        dog_time.append(stop_dog - start_dog)
         blobs_dog[:, 2] = blobs_dog[:, 2] * sqrt(2)
         dog_acc.append(get_accuracy(center_kd_tree, blobs_dog, center_list, threshold))
 
@@ -89,7 +92,7 @@ def compare_blob_detection(num_runs=15, threshold=3):
         start_doh = timeit.default_timer()
         blobs_doh = blob_doh(image, min_sigma=1, max_sigma=3)
         stop_doh = timeit.default_timer()
-        doh_time += stop_doh - start_doh
+        doh_time.append(stop_doh - start_doh)
         doh_acc.append(get_accuracy(center_kd_tree, blobs_doh, center_list, threshold))
 
         # Simple Blob Detector opencv
@@ -115,14 +118,14 @@ def compare_blob_detection(num_runs=15, threshold=3):
         blobs_sbd = cv2.KeyPoint_convert(keypoints)
         blobs_sbd = np.flip(np.array(blobs_sbd), 1)
         stop_sbd = timeit.default_timer()
-        sbd_time += stop_sbd - start_sbd
+        sbd_time.append(stop_sbd - start_sbd)
         sbd_acc.append(get_accuracy(center_kd_tree, blobs_sbd, center_list, threshold))
 
     # Average Time over runs
-    log_time = log_time / num_runs
-    dog_time = dog_time / num_runs
-    doh_time = doh_time / num_runs
-    sbd_time = sbd_time / num_runs
+    log_time = np.sum(log_time) / num_runs
+    dog_time =  np.sum(dog_time) / num_runs
+    doh_time =  np.sum(doh_time) / num_runs
+    sbd_time =  np.sum(sbd_time) / num_runs
 
     # Convert arrays to numpy
     log_acc = np.array(log_acc)
@@ -151,6 +154,12 @@ def compare_blob_detection(num_runs=15, threshold=3):
         "Simple Blob Detector:   \t %2.5f s, TP: %2.2f,\t DC: %2.2f"
         % (sbd_time, np.mean(sbd_acc[:, 0]), np.mean(sbd_acc[:, 2]))
     )
+
+    save_list = [log_time, log_acc, dog_time, dog_acc,
+                 doh_time, doh_acc, sbd_acc, sbd_acc]
+
+    np.savetxt(Path("./logs/runtime_blob_detection.csv"), save_list, delimiter=",", header="log_time,log_acc,dog_time,dog_acc,"
+                                                        "doh_time, doh_acc, sbd_acc, sbd_acc")
 
 
 if __name__ == "__main__":
