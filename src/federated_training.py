@@ -12,7 +12,6 @@ import syft as sy  # <-- NEW: import the Pysyft library
 
 class DatasetFromSubset(Dataset):
     """
-<
     """
 
     def __init__(self, subset):
@@ -71,6 +70,7 @@ def create_federated_dataset(
     data_augmentation = get_data_augmentation(False, img_size)
     dataset = create_dataset(path=path, data_augmentation=data_augmentation)
     split_datasets = split_dataset(dataset, percentage_of_dataset)
+    # split_datasets = set_prop_dataset(split_datasets, targets, balance)
     return split_datasets
 
 
