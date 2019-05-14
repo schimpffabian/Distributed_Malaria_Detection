@@ -5,5 +5,4 @@ __pycache__/
 presentation_report/
 state_dicts/
 *.pt
-logs/
 onnx/
