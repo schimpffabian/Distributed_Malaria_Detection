@@ -6,7 +6,7 @@ from math import sqrt
 from skimage.transform import resize
 
 try:
-    from src.models.Custom_CNN import Simple_CNN
+    from src.models.Custom_CNN import Simple_CNN_e2
     from src.auxiliaries import get_images, rgb2gray
 except ModuleNotFoundError:
     from models.Custom_CNN import Simple_CNN
@@ -14,7 +14,7 @@ except ModuleNotFoundError:
 import torch
 from torch.jit import trace
 
-IMG_SIZE = 48
+IMG_SIZE = 128
 
 
 def get_cell_image(x, y, r, img):
@@ -22,11 +22,11 @@ def get_cell_image(x, y, r, img):
     Receives x, y and the respective radius of a a blob in an image, returns rectangular image with
     blob inside
 
-    :param x:
-    :param y:
-    :param r:
-    :param img:
-    :return:
+    :param float x: x coordinate of blob
+    :param float y: y coordinate of blob
+    :param float r: radius of blob
+    :param img: image containing the blob
+    :return: section of the image containing the blob
     """
     img_shape = img.shape
     cons_r = np.ceil(r)  # conservative radius is ceiled to encapsulate blob fully
@@ -66,12 +66,10 @@ def get_cell_image(x, y, r, img):
 
 def create_blob_sequence(image):
     """
-
-    :param image:
-    :return:
+    Apply multiple blob detection algorithms to compare them
+    :param image: image to be analysed
+    :return: squenece containing the blobs, colors and titles
     """
-
-    # ToDo: Add https://www.learnopencv.com/blob-detection-using-opencv-python-c/
     blobs_log = blob_log(image, min_sigma=15, max_sigma=40, num_sigma=10, overlap=1)
 
     # Compute radii in the 3rd column.
@@ -83,7 +81,7 @@ def create_blob_sequence(image):
     blobs_doh = blob_doh(image, min_sigma=5, max_sigma=40, overlap=1)
 
     blobs_list = [blobs_log, blobs_dog, blobs_doh]
-    colors = ["yellow", "lime", "green"]
+    colors = ["yellow", "green", "black"]
     titles = [
         "Laplacian of Gaussian",
         "Difference of Gaussian",
@@ -112,12 +110,12 @@ def classify_cell_image(cell_image, model):
 
 def load_model(path, tracing=False):
     """
-
-    :param path:
-    :param tracing:
-    :return:
+    function to load a network for classification
+    :param str path: state dicts of previous training
+    :param bool tracing: turn tracing on or off
+    :return: model
     """
-    model = Simple_CNN()
+    model = Simple_CNN_e2(128)
     model.load_state_dict(torch.load(path))
     model = model.double()
 
@@ -131,12 +129,13 @@ def load_model(path, tracing=False):
 
 def main():
     """
-
+    Demonstration of the combination of object detection and classification
     """
+
     path = "../data/Real_Application/"
     images = get_images(path)
 
-    model = load_model(path="./models/custom_cnn_e10_size_48.pt", tracing=False)
+    model = load_model(path="./state_dicts/custom_cnn_e4_0.pt", tracing=False)
 
     for image in images:
         # image = "malaria_0.jpg"
@@ -148,7 +147,6 @@ def main():
 
         sequence = create_blob_sequence(image_gray_inverse)
 
-        plt.figure(1)
         fig, axes = plt.subplots(1, 3, figsize=(9, 3), sharex=True, sharey=True)
         ax = axes.ravel()
 
@@ -171,9 +169,9 @@ def main():
                 ax[idx].add_patch(c)
             ax[idx].set_axis_off()
 
-        break
-        # plt.tight_layout()
-        # plt.show()
+        #break
+        plt.tight_layout()
+        plt.show()
 
 
 if __name__ == "__main__":

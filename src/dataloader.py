@@ -13,8 +13,8 @@ def randomize_background(x, dark_background=True):
     Since images in the malaria datasets have default backgrounds around the cells and LIME
     indicates that NNs use the backgrounds shape to make predictions
 
-    :param x: torch.tensor
-    :param dark_background: Bool value of background True - 0,False - 255
+    :param torch.tensor x: input image
+    :param bool dark_background: Bool value of background True - 0,False - 255
     :return: Image with ranomized input
     """
 
@@ -40,10 +40,10 @@ def get_data_augmentation(random_background, img_size, dark_background=True):
     """
     Standard composed transformations for data augmentation
 
-    :param random_background: Bool - Randomize background
-    :param img_size: Scales input images to square img_size
-    :param dark_background: Bool - True - background has val 0 otherwise val 255
-    :return:
+    :param bool random_background: Randomize background
+    :param int img_size: Scales input images to square img_size
+    :param bool dark_background: True - background has val 0 otherwise val 255
+    :return: data_augmentation
     """
     # Define data augmentation and transforms
     # transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
@@ -74,7 +74,7 @@ def get_labels_and_class_counts(labels_list):
     """
     Calculates the counts of all unique classes.
 
-    :param labels_list: list or ndarray with labels
+    :param list|ndarray labels_list: list or ndarray with labels
     :return:
     """
     labels = np.array(labels_list)
@@ -89,8 +89,8 @@ def resample(target_list, imbal_class_prop):
     https://github.com/ptrblck/tutorials/blob/imbalanced_tutorial/intermediate_source/imbalanced_data_tutorial.py#L297
     Resample the indices to create an artificially imbalanced dataset.
 
-    :param target_list
-    :param imbal_class_prop
+    :param list target_list: labels
+    :param list imbal_class_prop: list of list containing the desired class distributions
     :return: indices to satisfy the probabilities given in imbal_class_prop
     """
     targets, class_counts = get_labels_and_class_counts(target_list)
@@ -118,7 +118,7 @@ def create_dataset(path, data_augmentation):
     """
     Convenience function for this project
 
-    :param path: str path to root directory containing folders with samples for each class
+    :param str path: str path to root directory containing folders with samples for each class
     :param data_augmentation: torch transforms object
     :return: torch dataset
     """
@@ -131,7 +131,7 @@ def split_dataset(dataset, percentage_of_dataset):
     Separate dataset into parts with percentages specified in percentage_of_dataset
 
     :param dataset: torch Dataset to be split
-    :param percentage_of_dataset: list or numpy array with percentage of each split
+    :param list percentage_of_dataset: list or numpy array with percentage of each split
     :return: torch subsets
     """
     if np.array(percentage_of_dataset).sum() != 1:
@@ -157,7 +157,7 @@ def set_prop_dataset(datasets, targets, balance):
     Creates datasets with a given balance of classes
 
     :param datasets: subsets of datasets
-    :param targets: lables of originial e.g. not split dataset
+    :param targets: labels of originial e.g. not split dataset
     :param balance: list of lists containing the wanted probabilities of each class in the given datasets
     :return: modified datasets
     """
@@ -171,9 +171,9 @@ def set_prop_dataset(datasets, targets, balance):
 
 
 def create_dataloaders(
-    batchsize=28,
+    batchsize=1024,
     img_size=128,
-    path=Path("../data/Classification"),
+    path=Path(os.path.dirname(os.path.abspath(__file__)) + "/../data/Classification"),
     random_background=False,
     num_workers=0,
     percentage_of_dataset=np.array([0.75, 0.2, 0.05]),
@@ -182,15 +182,16 @@ def create_dataloaders(
     """
     Convenience function to setup dataloaders for experiments
 
-    :param batchsize: (int) size of batch
-    :param img_size: (int) size of image - underlying assumption of square images
-    :param path: (str) path to folders containing images
-    :param random_background: (bool) whether to randomize uniform backgrounds or not
-    :param num_workers: (int) number of processes used to move data from RAM to GPU memory
-    :param percentage_of_dataset: (tuple) percentages of each split
-    :param balance: list of lists containing the wanted probabilities of each class in the given datasets
+    :param int batchsize: size of batch
+    :param int img_size: size of image - underlying assumption of square images
+    :param str path: path to folders containing images
+    :param bool random_background: whether to randomize uniform backgrounds or not
+    :param int num_workers: number of processes used to move data from RAM to GPU memory
+    :param tuple percentage_of_dataset: percentages of each split
+    :param list balance: list of lists containing the wanted probabilities of each class in the given datasets
     :return: torch.utils.dataloader objects
     """
+
     data_augmentation = get_data_augmentation(random_background, img_size)
 
     # Load all data, create dataset

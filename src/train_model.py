@@ -25,23 +25,31 @@ def finetune_model(
     num_epochs=42,
     feature_extract=True,
     lr=1e-3,
+    use_gpu=True,
+    name=""
 ):
     """
 
-    :param model_name:
-    :param num_classes:
-    :param batch_size:
-    :param num_epochs:
-    :param feature_extract:
-    :param lr:
+    :param str model_name: model to be loaded
+    :param int num_classes: number of classes
+    :param int batch_size: size of batch used for SGD
+    :param int num_epochs: Number of times the network is updated on the data
+    :param bool feature_extract: deactivate gradients
+    :param float lr: learning rate
+    :param bool use_gpu: Allow or prohibit use of GPU
+    :param str name: Optional path to save the network parameters to
     """
+
     model_ft, input_size = initialize_model(
         model_name, num_classes, feature_extract, use_pretrained=True
     )
     loss = nn.CrossEntropyLoss()
     use_cuda = torch.cuda.is_available()
 
-    device = torch.device("cuda" if use_cuda else "cpu")
+    if use_gpu:
+        device = torch.device("cuda" if use_cuda else "cpu")
+    else:
+        device = "cpu"
 
     train_loader, test_loader, val_loader = create_dataloaders(
         batchsize=batch_size, img_size=input_size
@@ -52,11 +60,18 @@ def finetune_model(
 
     for epoch in range(1, num_epochs + 1):
         train(model, device, train_loader, optimizer, epoch, loss)
-        run_t(model, device, test_loader, loss)
+        accuracy = run_t(model, device, test_loader, loss)
+
+    if name == "":
+        save_name = Path("./models/" + model_name + "_e" + str(num_epochs) + ".pt")
+    else:
+        save_name = Path(name + ".pt")
 
     torch.save(
-        model.state_dict(), "./models/" + model_name + "_e" + str(num_epochs) + ".pt"
+        model.state_dict(),
+        save_name
     )
+    return accuracy
 
 
 def custom_classifier(model=Simple_CNN(img_size=128), batch_size=256, num_epochs=42, img_size=48, lr=1e-3, use_gpu=True,

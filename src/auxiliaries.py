@@ -18,7 +18,7 @@ def set_parameter_requires_grad(model, feature_extracting):
     Function for model finetuning to freeze feature extractor and retrain last layers
 
     :param model: PyTorch model child of torch.nn.Module
-    :param feature_extracting: (Bool) True disables gradients
+    :param bool feature_extracting: True disables gradients
     """
     #  Source: https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.htmlS
     if feature_extracting:
@@ -32,11 +32,11 @@ def initialize_model(model_name, num_classes, feature_extract, use_pretrained=Tr
     Initialize these variables which will be set in this if statement. Each of these
     variables is model specific.
 
-    :param model_name: (str) model to be loaded
-    :param num_classes: (int) number of classes
-    :param feature_extract: (bool) deactivate gradients
-    :param use_pretrained: (bool) load pretrained weights
-    :return:
+    :param str model_name: model to be loaded
+    :param int num_classes: number of classes
+    :param bool feature_extract: deactivate gradients
+    :param bool use_pretrained: load pretrained weights
+    :return: pretrained model, input_size
     """
     model_ft = None
     input_size = 0
@@ -113,19 +113,20 @@ def train(model, device, train_loader, optimizer, epoch, loss, federated=False, 
     """
     Training function for NNs
 
-    :param model: PyTorch model child of torch.nn.Module
-    :param device: (str) device to run the model on
-    :param train_loader: (torch.utils.data.DataLoader()) Dataloader
-    :param optimizer: Optimizer from torch.optim
-    :param epoch: (int) number of epoches to train
-    :param loss: Loss function from torch.nn
-    :param federated: (bool) federated training
+    :param torch.nn.Module model: PyTorch model child of
+    :param str device: device to run the model on
+    :param torch.utils.data.DataLoader train_loader: Dataloader
+    :param torch.optim optimizer: Optimizer from
+    :param int epoch:  number of epoches to train
+    :param loss: Loss function from
+    :param bool federated: federated training
 
     """
     model.train()
     for batch_idx, (data, target) in enumerate(train_loader):
         if federated:
-            model_backup = copy.deepcopy(model)
+            pass
+            #model_backup = copy.deepcopy(model)
         try:
             if federated:
                 model.send(data.location)
@@ -144,7 +145,7 @@ def train(model, device, train_loader, optimizer, epoch, loss, federated=False, 
             optimizer.step()
         except TypeError:
             print("Type Error occured")
-            model = model_backup
+            # model = model_backup
             break
         if federated:
             model.get()
@@ -169,8 +170,8 @@ def run_t(model, device, test_loader, loss, secure_evaluation=False):
     Test function for NNs
 
     :param model: PyTorch model child of torch.nn.Module
-    :param device: (str) device to run the model on
-    :param test_loader: (torch.utils.data.DataLoader()) Dataloader
+    :param str device: device to run the model on
+    :param torch.utils.data.DataLoader() test_loader: Dataloader
     :param loss: Loss function from torch.nn
     """
     model.eval()
@@ -198,15 +199,13 @@ def run_t(model, device, test_loader, loss, secure_evaluation=False):
 
                 correct += pred.eq(target.view_as(pred)).sum().item()
 
-                test_loss /= len(test_loader.dataset)
-
                 if hasattr(test_loader, "dataset"):
                     print(
                         "Test set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)".format(
-                            test_loss,
+                            test_loss / num_predictions,
                             correct,
-                            len(test_loader.dataset),
-                            100.0 * correct / len(test_loader.dataset),
+                            num_predictions,
+                            100.0 * correct / num_predictions,
                         )
                     )
 
@@ -235,7 +234,7 @@ def get_images(path):
     """
     Return all images in path as list of strings
 
-    :param path: (str) path to image directory
+    :param str path: path to image directory
     :return: list of images in path
     """
     return [f for f in listdir(path) if isfile(join(path, f))]
@@ -245,8 +244,8 @@ def rgb2gray(rgb):
     """
     Converts RGB images to black and white
 
-    :param rgb: (ndarray) RGB image - shape: (n, m, 3)
-    :return: (ndarray) image - shape: (n, m, 3)
+    :param ndarray rgb: RGB image - shape: (n, m, 3)
+    :return: image - shape: (n, m, 3)
     """
     transform_factor = np.array([0.2989, 0.5870, 0.1140]).reshape((3, 1))
     return rgb @ transform_factor
@@ -257,11 +256,11 @@ def create_test_img(
 ):
     """
     Creates randomly distributed bright dots on black background
-    :param size:        (tuple) dimensions of test image
-    :param num_points:  (int) number of bright spots
-    :param radius_min:  (int) minimum radius for bright spots
-    :param radius_max:  (int) maximum radius for bright spots
-    :param random_seed: (int) random seed
+    :param tuple size:        dimensions of test image
+    :param int num_points:  number of bright spots
+    :param int radius_min:  minimum radius for bright spots
+    :param int radius_max:  maximum radius for bright spots
+    :param int random_seed: random seed
     :return: test_img (ndarray), center_list (list), radius_list (list)
     """
 

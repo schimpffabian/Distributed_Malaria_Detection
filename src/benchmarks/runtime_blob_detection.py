@@ -1,5 +1,8 @@
-from auxiliaries import create_test_img
-from skimage.feature import blob_dog, blob_log, blob_doh
+import os
+import sys
+from skimage.feature import blob_dog
+from skimage.feature import blob_log
+from skimage.feature import blob_doh
 import cv2
 from math import sqrt
 from scipy.spatial import KDTree
@@ -7,15 +10,18 @@ import timeit
 import numpy as np
 from pathlib import Path
 
+sys.path.append(os.path.join("..", ".."))
+from src.auxiliaries import create_test_img
+
 
 def get_accuracy(kd_tree, blob_list, center_list, threshold):
     """
     Calculate true positives, false positives,
 
-    :param kd_tree: scipy.spatial.KDTree of real centers
-    :param blob_list: list of predicted centers
-    :param center_list: list of real centers
-    :param threshold: max accepted distance between prediction and real center to count as correct
+    :param scipy.spatial.KDTree kd_tree:  of real centers
+    :param list blob_list: list of predicted centers
+    :param list center_list: list of real centers
+    :param float threshold: max accepted distance between prediction and real center to count as correct
     :return: [true_positive_rate, false_positive_rate, detected_centers_rate]
     """
     num_real_centers = len(center_list)
@@ -158,7 +164,7 @@ def compare_blob_detection(num_runs=1, threshold=4):
     save_list = [log_time, log_acc, dog_time, dog_acc,
                  doh_time, doh_acc, sbd_acc, sbd_acc]
 
-    np.savetxt(Path("./logs/runtime_blob_detection.csv"), save_list, delimiter=",", header="log_time,log_acc,dog_time,dog_acc,"
+    np.savetxt(Path("../logs/runtime_blob_detection.csv"), save_list, delimiter=",", header="log_time,log_acc,dog_time,dog_acc,"
                                                         "doh_time, doh_acc, sbd_acc, sbd_acc")
 
 

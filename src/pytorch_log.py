@@ -12,13 +12,13 @@ def log_kernel(
     kernel_size, sigma_start=1.0, sigma_stop=10.0, num_sigma_steps=10, lin_sigma=True
 ):
     """
-
-    :param kernel_size:
-    :param sigma_start:
-    :param sigma_stop:
-    :param num_sigma_steps:
-    :param lin_sigma:
-    :return:
+    Creates Kernels used for Laplacian of Gaussian convolutions
+    :param int kernel_size: size of the kernel, should be odd
+    :param float sigma_start: smallest kernel parameter
+    :param float sigma_stop: biggest kernel parameter
+    :param int num_sigma_steps: number of different kernels
+    :param bool lin_sigma: use linear or logarithmic scaling between sigma_start and sigma_end
+    :return: kernel
     """
     if kernel_size % 2 == 0:
         ValueError("please use odd kernel sizes")
@@ -63,15 +63,15 @@ def log_kernel(
     return kernel.tolist(), sigma_vec
 
 
-def log(img, min_sigma=5, max_sigma=5, num_sigma=1, exclude_borders=True):
+def pt_log(img, min_sigma=5, max_sigma=5, num_sigma=1, exclude_borders=True):
     """
-
-    :param img:
-    :param min_sigma:
-    :param max_sigma:
-    :param num_sigma:
-    :param exclude_borders:
-    :return:
+    PyTorch implementation of Laplassian of Gaussian
+    :param img: input image
+    :param float sigma_start: smallest kernel parameter
+    :param float sigma_stop: biggest kernel parameter
+    :param int num_sigma_steps: number of different kernels
+    :param bool exclude_borders: exclude extrema close to the image border
+    :return: x-location, y-location, radius of blobs
     """
     num_filters = num_sigma
     sigma_start = min_sigma
@@ -143,7 +143,7 @@ def log(img, min_sigma=5, max_sigma=5, num_sigma=1, exclude_borders=True):
 # https://discuss.pytorch.org/t/changing-the-weights-of-conv2d/22992/14
 def benchmark_log(num_runs=1):
     """
-
+    Compare different implementations
     """
 
     time_pt_log = 0
@@ -158,7 +158,7 @@ def benchmark_log(num_runs=1):
         ax[1].imshow(test_img)
         ax[2].imshow(test_img)
 
-        x, y, sigma, safe_dist, start_pt = log(
+        x, y, sigma, safe_dist, start_pt = pt_log(
             test_img, min_sigma=1, max_sigma=10, num_sigma=10, exclude_borders=False
         )
         end_pt = timeit.default_timer()

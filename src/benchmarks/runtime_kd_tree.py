@@ -1,11 +1,14 @@
-from auxiliaries import create_test_img
+import os
+import sys
 from scipy.spatial import KDTree
 import sys
 from skimage.feature import blob_log
 import timeit
 import numpy as np
-import csv
 from pathlib import Path
+
+sys.path.append(os.path.join("..", ".."))
+from src.auxiliaries import create_test_img
 
 
 def build_kd_tree(center_list):
@@ -91,7 +94,7 @@ def main():
 
     # Save results
     save_list = np.array([num_points_list, time_build_kd, time_query_kd, time_naive_nn]).T
-    np.savetxt(Path("./logs/speedup_kd_tree.csv"), save_list, delimiter=",",
+    np.savetxt(Path("../logs/speedup_kd_tree.csv"), save_list, delimiter=",",
                header=",num_points,time_build_kd,time_query_kd,time_naive_nn")
 
 
