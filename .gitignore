@@ -6,5 +6,4 @@ presentation_report/
 state_dicts/
 scratch/
 *.pt
-logs/
 onnx/
