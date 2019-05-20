@@ -15,14 +15,13 @@ def main():
     img_size = 64
 
     train_loader, test_loader, validation_loader = create_dataloaders(batch_size, img_size=img_size)
+    del validation_loader
 
     classifier = LogisticRegression(random_state=42, warm_start=True, solver="liblinear")
 
     for episode in range(num_episodes):
         print("\nRun \t %.0f" % episode)
         for data, target in train_loader:
-            num_samples = len(target)
-
             # Reshape data for grayscale conversion
             data = data.view((-1, img_size, img_size, 3))
             data_train = data.detach().cpu().numpy()

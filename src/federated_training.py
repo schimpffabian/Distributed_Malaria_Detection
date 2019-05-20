@@ -1,10 +1,10 @@
 import torch
 import torch.optim as optim
 import torch.nn as nn
-import torch.nn.functional as F
+
 import numpy as np
 from torch.utils.data import Dataset
-from src.dataloader import create_dataset, split_dataset, get_data_augmentation, set_prop_dataset, create_dataloaders
+from src.dataloader import create_dataset, split_dataset, get_data_augmentation, set_prop_dataset
 # from src.models.Custom_CNN import Simple_CNN_e1
 from src.models.Custom_CNN import Simple_CNN_e2
 from src.models.Custom_CNN import Simple_CNN2
@@ -34,17 +34,18 @@ class DatasetFromSubset(Dataset):
     def subset_to_dataset(subset):
         """
         Method to turn the index tensor and original dataset in subsets into smaller datasets
+
         :param subset: Subset to transform
         :return: dataset
         """
         indices = subset.indices
         targets = subset.dataset.targets
 
-        if type(indices) == list:
+        if isinstance(indices, list):
             pass
-        elif type(indices) == torch.tensor:
+        elif isinstance(indices, torch.tensor):
             indices = list(indices.data.numpy())
-        elif type(indices) == np.ndarray:
+        elif isinstance(indices, np.ndarray):
             indices = list(indices)
 
         else:
@@ -61,6 +62,7 @@ class DatasetFromSubset(Dataset):
         dataloader = torch.utils.data.DataLoader(subset, batch_size=4000, shuffle=False)
 
         for ii, (data, target) in enumerate(dataloader):
+            del target
             if ii == 0:
                 concat_tensor = data
             else:
@@ -76,6 +78,8 @@ def create_federated_dataset(
     balance=np.array([[0.5, 0.5], [0.5, 0.5]])
 ):
     """
+    Helper function to create datasets that can be used for federated learning
+
     :param path: (str) path to folders containing images
     :param int img_size: size of image - underlying assumption of square images
     :param list percentage_of_dataset: list or numpy array with percentage of each split
@@ -96,7 +100,7 @@ def simple_federated_model():
     :return:
     """
     # Parameters and general setup
-    epochs = 50
+    epochs = 3
 
     # use_cuda = torch.cuda.is_available()
     torch.manual_seed(42)
@@ -114,7 +118,7 @@ def simple_federated_model():
     train_dataset = DatasetFromSubset(train_set)
     test_loader = torch.utils.data.DataLoader(test_set, batch_size=1024, shuffle=True)
 
-    for ii in range(2):
+    for ii in range(1):
         for num_workers in [2, 3, 4]:
 
             # load model
@@ -157,7 +161,7 @@ def simple_federated_model():
             end = timeit.default_timer()
             results.append([ii, num_workers, end-start, accuracy])
 
-            np.savetxt(Path("./logs/federated_learning_speed.csv"), results, delimiter=",",
+            np.savetxt(Path("./logs/federated_learning_speed_xx2.csv"), results, delimiter=",",
                        header="run, num_workers,duration, accuracy")
 
 
@@ -177,6 +181,7 @@ def secure_evaluation(img_size=128):
     crypto_provider = sy.VirtualWorker(hook, id="crypto_provider")
 
     train_set, test_set = create_federated_dataset(img_size=img_size)
+    del train_set
     test_loader = torch.utils.data.DataLoader(test_set, batch_size=42, shuffle=True)
 
     model = Simple_CNN2(img_size)
@@ -189,7 +194,7 @@ def secure_evaluation(img_size=128):
     # Changes for secure evaluation
     private_test_loader = []
     for data, target in test_loader:
-        pass
+
         private_test_loader.append(
             (
                 data.fix_prec().share(
@@ -214,7 +219,7 @@ def compare_optimizers():
     :return:
     """
     # Parameters and general setup
-    epochs = 50
+    epochs = 100
     torch.manual_seed(42)
 
     # Create datasets and dataloaders
@@ -235,12 +240,21 @@ def compare_optimizers():
             model = Simple_CNN_e2(img_size=128)
             model = model.float()
 
+            """ Run 2
             if opt == 0:
                 optimizer = optim.Adam(model.parameters(), lr=1e-3)
             elif opt == 1:
                 optimizer = optim.SGD(model.parameters(), lr=1e-3)
             elif opt == 2:
                 optimizer = optim.SGD(model.parameters(), lr=1e-1)
+            """
+
+            if opt == 0:
+                optimizer = optim.SGD(model.parameters(), lr=0.5)
+            elif opt == 1:
+                optimizer = optim.SGD(model.parameters(), lr=1e-1)
+            elif opt == 2:
+                optimizer = optim.SGD(model.parameters(), lr=1e-2)
 
             loss = nn.CrossEntropyLoss()
 
@@ -257,15 +271,15 @@ def compare_optimizers():
                 )
                 accuracy = run_t(model, device, test_loader, loss)
                 results_acc.append([opt, run, epoch, accuracy])
-                np.savetxt(Path("./logs/optimiser_acc_log.csv"), results_time, delimiter=",",
+                np.savetxt(Path("./logs/optimizer_acc_log_3.csv"), results_acc, delimiter=",",
                            header="optimizer, run, epoch, accuracy")
 
             end = timeit.default_timer()
             results_time.append([opt, run , end - start, accuracy])
-            np.savetxt(Path("./logs/optimiser_time_log.csv"), results_time, delimiter=",",
+            np.savetxt(Path("./logs/optimizer_time_log_3.csv"), results_time, delimiter=",",
                        header="optimizer, run, time, accuracy")
 
 
 if __name__ == "__main__":
-    simple_federated_model()
+    #simple_federated_model()
     compare_optimizers()

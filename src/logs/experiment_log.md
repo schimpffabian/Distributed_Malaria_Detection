@@ -10,4 +10,6 @@ Tried to allocate 546.75 MiB (GPU 0; 4.00 GiB total capacity; 2.47 GiB already a
 
 federated speed - 50 episodes SGD lr e-1, momentum=0.75, 2-4 worker, 3 runs
 
+speedup_kd_tree 200x200 num_points = [10, 33, 100, 333]
+
 

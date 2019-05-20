@@ -91,7 +91,7 @@ def demonstrate_randomization():
         model_standard.load_state_dict(torch.load("../src/state_dicts/custom_cnn_e4_0.pt"))
 
     images = get_images(path)
-    image = imread(path + images[100])
+    image = imread(path + images[100])  # 100 shows difference
     image_resized = misc.imresize(image, (input_size, input_size))
 
     plt.subplot(1, 3, 1)

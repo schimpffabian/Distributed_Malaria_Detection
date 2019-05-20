@@ -13,6 +13,7 @@ def log_kernel(
 ):
     """
     Creates Kernels used for Laplacian of Gaussian convolutions
+
     :param int kernel_size: size of the kernel, should be odd
     :param float sigma_start: smallest kernel parameter
     :param float sigma_stop: biggest kernel parameter
@@ -66,6 +67,7 @@ def log_kernel(
 def pt_log(img, min_sigma=5, max_sigma=5, num_sigma=1, exclude_borders=True):
     """
     PyTorch implementation of Laplassian of Gaussian
+
     :param img: input image
     :param float sigma_start: smallest kernel parameter
     :param float sigma_stop: biggest kernel parameter
@@ -144,6 +146,8 @@ def pt_log(img, min_sigma=5, max_sigma=5, num_sigma=1, exclude_borders=True):
 def benchmark_log(num_runs=1):
     """
     Compare different implementations
+
+    :param int num_runs: number of runs
     """
 
     time_pt_log = 0

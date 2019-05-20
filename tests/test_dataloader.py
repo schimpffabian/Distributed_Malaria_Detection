@@ -79,12 +79,6 @@ def test_split_dataset():
     assert len(percentages) == len(datasets)
 
 
-def test_resample():
-    """
-    List of
-    """
-
-
 def test_set_prop_dataset():
     """
     make sure that datasets can be split as intended

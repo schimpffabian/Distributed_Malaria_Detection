@@ -55,6 +55,7 @@ def main():
     Compare runtimes
     """
     num_runs = 16
+
     num_points = [10, 33, 100, 333]
     time_build_kd = []
     time_query_kd = []

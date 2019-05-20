@@ -2,7 +2,6 @@ import torch
 import torch.optim as optim
 import torch.nn as nn
 from pathlib import Path
-import os
 
 try:
     from src.auxiliaries import train
@@ -51,7 +50,7 @@ def finetune_model(
     else:
         device = "cpu"
 
-    train_loader, test_loader, val_loader = create_dataloaders(
+    train_loader, test_loader = create_dataloaders(
         batchsize=batch_size, img_size=input_size
     )
 
@@ -91,8 +90,7 @@ def custom_classifier(model=Simple_CNN(img_size=128), batch_size=256, num_epochs
     use_cuda = torch.cuda.is_available()
 
     device = torch.device("cuda" if use_cuda and use_gpu else "cpu")
-    print(device)
-    train_loader, test_loader, val_loader = create_dataloaders(
+    train_loader, test_loader = create_dataloaders(
         batchsize=batch_size, img_size=img_size, random_background=random_background
     )
 

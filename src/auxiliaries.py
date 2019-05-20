@@ -256,6 +256,7 @@ def create_test_img(
 ):
     """
     Creates randomly distributed bright dots on black background
+    
     :param tuple size:        dimensions of test image
     :param int num_points:  number of bright spots
     :param int radius_min:  minimum radius for bright spots
