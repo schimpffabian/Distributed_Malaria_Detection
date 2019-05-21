@@ -1,4 +1,6 @@
 from matplotlib.image import imread
+from src.analysis.plot_config import params
+import line_profiler
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -140,6 +142,9 @@ def compare_blob_detection_algorithms(path, model):
     :param str path: path to images that should be analyzed
     :param model: PyTorch model to use for classification
     """
+    # Plotting settings
+    params['figure.figsize'] = [8, 4]
+    matplotlib.rcParams.update(params)
 
     images = get_images(path)
     for image in images:
@@ -191,7 +196,33 @@ def dog_blob_detection(image):
     return blobs
 
 
-#  @profile
+# @profile
+def analyze_blobs(blobs, model, img):
+    """
+    Apply classification model to every blob
+
+    :param np.ndarray blobs: [nx3] array with blobs [y, x, r]
+    :param model: model used for classification
+    :param img: full image to crop input from
+    :return: list of labels
+    """
+    labels = []
+    for row in range(blobs.shape[0]):
+        y = blobs[row, 0]
+        x = blobs[row, 1]
+        r = blobs[row, 2]
+        cell_img = get_cell_image(x, y, r, img)
+
+        try:
+            label = classify_cell_image(cell_img, model)
+        except ValueError:
+            label = 1
+
+        labels.append(label)
+
+    return labels
+
+
 def analyze_blobs(blobs, model, img):
     """
     Apply classification model to every blob
@@ -256,9 +287,24 @@ def main():
 
     # Uncomment application to run
 
-    compare_blob_detection_algorithms(path, model)
+    # compare_blob_detection_algorithms(path, model)
     # analyse_image(path, model)
+    profile_analyse_image()
     # analyse_image(path, model_traced)
+
+
+def profile_analyse_image():
+    """
+    Profile the analysis function
+    """
+
+    path = "../data/Real_Application/"
+
+    model = load_model(path="./state_dicts/custom_cnn_e4_0.pt", tracing=True)
+    lp = line_profiler.LineProfiler()
+    lp_wrapper = lp(analyse_image)
+    lp_wrapper(path, model)
+    lp.print_stats()
 
 
 if __name__ == "__main__":

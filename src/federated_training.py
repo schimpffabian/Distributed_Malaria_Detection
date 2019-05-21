@@ -100,7 +100,7 @@ def imbalanced_distribution():
     :return:
     """
     # Parameters and general setup
-    epochs = 1
+    epochs = 150
 
     # use_cuda = torch.cuda.is_available()
     torch.manual_seed(42)
