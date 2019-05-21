@@ -22,16 +22,16 @@ def log_kernel(
     :return: kernel
     """
     if kernel_size % 2 == 0:
-        ValueError("please use odd kernel sizes")
+        raise ValueError("please use odd kernel sizes")
 
     if lin_sigma is True:
         sigma_vec = np.linspace(sigma_start, sigma_stop, num_sigma_steps).tolist()
     elif lin_sigma is False:
         sigma_vec = np.logspace(sigma_start, sigma_stop, num_sigma_steps).tolist()
     else:
-        NotImplementedError(
+        raise NotImplementedError(
             "Please choose between: \nlinear scaling \t-> \t True \nlog scaling \t-> \t False"
-        )
+            )
     # print(sigma_vec)
     x_vec = np.arange(kernel_size) - np.floor(kernel_size / 2)
     y_vec = np.arange(kernel_size) - np.floor(kernel_size / 2)

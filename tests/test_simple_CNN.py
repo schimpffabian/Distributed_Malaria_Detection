@@ -85,10 +85,7 @@ def test_vars_change(model, loss, batch):
     :param loss:
     :param batch:
     """
-    use_cuda = torch.cuda.is_available()
-    device = torch.device("cuda" if use_cuda else "cpu")
-    # device = torch.device("cpu")
-    assert_vars_change(model, loss, torch.optim.Adam(model.parameters()), batch, device=device)
+    assert_vars_change(model, loss, torch.optim.Adam(model.parameters()), batch)
 
 
 def test_nan_vals(model, loss_fn, batch, optim):

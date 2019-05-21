@@ -129,7 +129,7 @@ def train(model, device, train_loader, optimizer, epoch, loss, federated=False, 
             if federated:
                 model.send(data.location)
         except KeyError:
-            print("Key Error occured")
+            print("\n\n\n\nKey Error occured\n\n\n\n")
             break
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad()

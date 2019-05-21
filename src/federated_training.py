@@ -1,13 +1,11 @@
 import torch
 import torch.optim as optim
 import torch.nn as nn
-
+import os
 import numpy as np
 from torch.utils.data import Dataset
 from src.dataloader import create_dataset, split_dataset, get_data_augmentation, set_prop_dataset
-# from src.models.Custom_CNN import Simple_CNN_e1
 from src.models.Custom_CNN import Simple_CNN_e2
-from src.models.Custom_CNN import Simple_CNN2
 from src.auxiliaries import run_t, train
 import syft as sy
 import timeit
@@ -72,7 +70,7 @@ class DatasetFromSubset(Dataset):
 
 
 def create_federated_dataset(
-    path="../data/Classification",
+    path=os.path.dirname(os.path.abspath(__file__)) + "/../data/Classification",
     img_size=128,
     percentage_of_dataset=np.array([0.75, 0.25]),
     balance=np.array([[0.5, 0.5], [0.5, 0.5]])
@@ -86,21 +84,23 @@ def create_federated_dataset(
     :param list balance: list of lists containing the wanted probabilities of each class in the given datasets
     :return: split datasets - subsets
     """
-    data_augmentation = get_data_augmentation(False, img_size)
+
+    data_augmentation = get_data_augmentation(random_background=False, img_size=img_size)
     dataset = create_dataset(path=path, data_augmentation=data_augmentation)
+
     targets = dataset.targets
     split_datasets = split_dataset(dataset, percentage_of_dataset)
     split_datasets = set_prop_dataset(split_datasets, targets, balance)
     return split_datasets
 
 
-def simple_federated_model():
+def imbalanced_distribution():
     """
     train a model with data federated over multiple workers
     :return:
     """
     # Parameters and general setup
-    epochs = 3
+    epochs = 1
 
     # use_cuda = torch.cuda.is_available()
     torch.manual_seed(42)
@@ -110,17 +110,38 @@ def simple_federated_model():
     # Setup virtual workers
     katherienhospital = sy.VirtualWorker(hook, id="kh")
     filderklinik = sy.VirtualWorker(hook, id="fikli")
-    kh_ruit = sy.VirtualWorker(hook, id="kh_ruit")
-    marienhospital = sy.VirtualWorker(hook, id="marien")
 
-    # Create datasets and dataloaders
-    train_set, test_set = create_federated_dataset()
-    train_dataset = DatasetFromSubset(train_set)
-    test_loader = torch.utils.data.DataLoader(test_set, batch_size=1024, shuffle=True)
+    for identifier, distribution in enumerate([[0.9, 0.1], [0.7, 0.3], [0.5, 0.5]]):
+        reverse_distribution = distribution[::-1]
+        balance = [distribution, reverse_distribution, [0.5, 0.5]]
+        percentage = [0.4, 0.4, 0.2]
 
-    for ii in range(1):
-        for num_workers in [2, 3, 4]:
+        # Create datasets and dataloaders
+        train_worker_kh, train_worker_fikli, test_set = create_federated_dataset(balance=balance, percentage_of_dataset=percentage)
+        test_loader = torch.utils.data.DataLoader(test_set, batch_size=1024, shuffle=True)
 
+        # Create datasets
+        train_dataset_kh = DatasetFromSubset(train_worker_kh)
+        train_dataset_fikli = DatasetFromSubset(train_worker_fikli)
+
+        # Seperate data and labels
+        data_kh = train_dataset_kh.data
+        target_kh = train_dataset_kh.targets
+
+        data_fikli = train_dataset_fikli.data
+        target_fikli = train_dataset_fikli.targets
+
+        # Create pointers
+        data_kh = data_kh.send(katherienhospital)
+        target_kh = target_kh.send(katherienhospital)
+
+        data_fikli = data_fikli.send(filderklinik)
+        target_fikli = target_fikli.send(filderklinik)
+
+        # Organize pointers to form a pseudo dataloader
+        train_loader = [(data_kh, target_kh), (data_fikli, target_fikli)]
+
+        for ii in range(3):
             # load model
             model = Simple_CNN_e2(img_size=128)
             model = model.float()
@@ -130,135 +151,6 @@ def simple_federated_model():
             optimizer = optim.SGD(model.parameters(), lr=1e-1)  # optimizer = optim.Adam(model.parameters(), lr=1e-3)
             loss = nn.CrossEntropyLoss()
 
-            if num_workers == 1:
-                # Doesn't work :(
-                train_set_federated = train_dataset.federate((katherienhospital))
-            elif num_workers == 2:
-                train_set_federated = train_dataset.federate((katherienhospital, filderklinik))
-            elif num_workers == 3:
-                train_set_federated = train_dataset.federate((katherienhospital, filderklinik, kh_ruit))
-            elif num_workers == 4:
-                train_set_federated = train_dataset.federate((katherienhospital, filderklinik, kh_ruit, marienhospital))
-
-            federated_train_loader = sy.FederatedDataLoader(
-                federated_dataset=train_set_federated, batch_size=1024
-            )
-
-            start = timeit.default_timer()
-            for epoch in range(1, epochs + 1):
-
-                train(
-                    model,
-                    device,
-                    federated_train_loader,
-                    optimizer,
-                    epoch,
-                    loss,
-                    federated=True,
-                )
-                accuracy = run_t(model, device, test_loader, loss)
-
-            end = timeit.default_timer()
-            results.append([ii, num_workers, end-start, accuracy])
-
-            np.savetxt(Path("./logs/federated_learning_speed_xx2.csv"), results, delimiter=",",
-                       header="run, num_workers,duration, accuracy")
-
-
-def secure_evaluation(img_size=128):
-    """
-    https://blog.openmined.org/encrypted-deep-learning-classification-with-pysyft/
-    """
-
-    use_cuda = torch.cuda.is_available()
-    torch.manual_seed(42)
-    hook = sy.TorchHook(torch)
-    # client = sy.VirtualWorker(hook, id="client")
-    katherienhospital = sy.VirtualWorker(
-        hook, id="kh"
-    )  # <-- NEW: define remote worker bob
-    filderklinik = sy.VirtualWorker(hook, id="fikli")
-    crypto_provider = sy.VirtualWorker(hook, id="crypto_provider")
-
-    train_set, test_set = create_federated_dataset(img_size=img_size)
-    del train_set
-    test_loader = torch.utils.data.DataLoader(test_set, batch_size=42, shuffle=True)
-
-    model = Simple_CNN2(img_size)
-    # model.load_state_dict(torch.load("./models/custom_cnn_e10_size_48.pt"))
-
-    device = torch.device("cuda" if use_cuda else "cpu")
-    # loss = F.nll_loss()
-    loss = nn.NLLLoss()
-
-    # Changes for secure evaluation
-    private_test_loader = []
-    for data, target in test_loader:
-
-        private_test_loader.append(
-            (
-                data.fix_prec().share(
-                    katherienhospital, filderklinik, crypto_provider=crypto_provider
-                ),
-                target.fix_prec().share(
-                    katherienhospital, filderklinik, crypto_provider=crypto_provider
-                ),
-            )
-        )
-
-    model.fix_precision().share(
-        katherienhospital, filderklinik, crypto_provider=crypto_provider
-    )
-
-    run_t(model, device, private_test_loader, loss, secure_evaluation=True)
-
-
-def compare_optimizers():
-    """
-    train a model with data federated over multiple workers
-    :return:
-    """
-    # Parameters and general setup
-    epochs = 100
-    torch.manual_seed(42)
-
-    # Create datasets and dataloaders
-    train_set, test_set = create_federated_dataset()
-    train_dataset = DatasetFromSubset(train_set)
-
-    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=1024, shuffle=True)
-    test_loader = torch.utils.data.DataLoader(test_set, batch_size=1024, shuffle=True)
-
-    # Setup optimization
-    device = "cpu"
-    results_time = []
-    results_acc = []
-
-    for opt in range(3):
-        for run in range(3):
-            # load model
-            model = Simple_CNN_e2(img_size=128)
-            model = model.float()
-
-            """ Run 2
-            if opt == 0:
-                optimizer = optim.Adam(model.parameters(), lr=1e-3)
-            elif opt == 1:
-                optimizer = optim.SGD(model.parameters(), lr=1e-3)
-            elif opt == 2:
-                optimizer = optim.SGD(model.parameters(), lr=1e-1)
-            """
-
-            if opt == 0:
-                optimizer = optim.SGD(model.parameters(), lr=0.5)
-            elif opt == 1:
-                optimizer = optim.SGD(model.parameters(), lr=1e-1)
-            elif opt == 2:
-                optimizer = optim.SGD(model.parameters(), lr=1e-2)
-
-            loss = nn.CrossEntropyLoss()
-
-            start = timeit.default_timer()
             for epoch in range(1, epochs + 1):
                 train(
                     model,
@@ -267,19 +159,15 @@ def compare_optimizers():
                     optimizer,
                     epoch,
                     loss,
-                    federated=False,
+                    federated=True,
                 )
                 accuracy = run_t(model, device, test_loader, loss)
-                results_acc.append([opt, run, epoch, accuracy])
-                np.savetxt(Path("./logs/optimizer_acc_log_3.csv"), results_acc, delimiter=",",
-                           header="optimizer, run, epoch, accuracy")
 
-            end = timeit.default_timer()
-            results_time.append([opt, run , end - start, accuracy])
-            np.savetxt(Path("./logs/optimizer_time_log_3.csv"), results_time, delimiter=",",
-                       header="optimizer, run, time, accuracy")
+                results.append([ii, identifier, epoch, accuracy])
+
+            np.savetxt(Path("./logs/federated_learning_speed_distribution.csv"), results, delimiter=",",
+                       header="run, identifier, epoch, accuracy")
 
 
 if __name__ == "__main__":
-    #simple_federated_model()
-    compare_optimizers()
+    imbalanced_distribution()

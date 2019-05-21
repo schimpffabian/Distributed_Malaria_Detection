@@ -1,9 +1,11 @@
 from matplotlib.image import imread
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from skimage.feature import blob_dog, blob_log, blob_doh
 from math import sqrt
 from skimage.transform import resize
+import timeit
 
 try:
     from src.models.Custom_CNN import Simple_CNN_e2
@@ -17,6 +19,7 @@ from torch.jit import trace
 IMG_SIZE = 128
 
 
+#  @profile
 def get_cell_image(x, y, r, img):
     """
     Receives x, y and the respective radius of a a blob in an image, returns rectangular image with
@@ -93,14 +96,16 @@ def create_blob_sequence(image):
 
 
 #  @profile
-def classify_cell_image(cell_image, model):
+def classify_cell_image(cell_image, model, anti_aliasing=False):
     """
+    Feeds cell_image to model and returns prediction
 
-    :param cell_image:
-    :param model:
-    :return:
+    :param cell_image: image to be classified
+    :param model: PyTorch model used for classification
+    :param bool anti_aliasing: turn anti aliasing on
+    :return: prediction
     """
-    cell_resized = resize(cell_image, (IMG_SIZE, IMG_SIZE), anti_aliasing=False)
+    cell_resized = resize(cell_image, (IMG_SIZE, IMG_SIZE), anti_aliasing=anti_aliasing)
     cell_torch = torch.from_numpy(cell_resized).reshape((1, 3, IMG_SIZE, IMG_SIZE))
     cell_torch = cell_torch.double()
     prediction = model(cell_torch)
@@ -108,14 +113,15 @@ def classify_cell_image(cell_image, model):
     return prediction.data.numpy().argmax()
 
 
-def load_model(path, tracing=False):
+def load_model(path, tracing=False, img_size=128):
     """
     function to load a network for classification
     :param str path: state dicts of previous training
     :param bool tracing: turn tracing on or off
+    :param int img_size: input size needed for model initialization
     :return: model
     """
-    model = Simple_CNN_e2(128)
+    model = Simple_CNN_e2(img_size)
     model.load_state_dict(torch.load(path))
     model = model.double()
 
@@ -127,18 +133,16 @@ def load_model(path, tracing=False):
         return model
 
 
-def main():
+def compare_blob_detection_algorithms(path, model):
     """
-    Demonstration of the combination of object detection and classification
+    Loads images in path, apply different blob detection algorithms, classify detected blobs
+
+    :param str path: path to images that should be analyzed
+    :param model: PyTorch model to use for classification
     """
 
-    path = "../data/Real_Application/"
     images = get_images(path)
-
-    model = load_model(path="./state_dicts/custom_cnn_e4_0.pt", tracing=False)
-
     for image in images:
-        # image = "malaria_0.jpg"
         img = imread(path + image)
         image_gray = rgb2gray(img)
         image_gray = image_gray.squeeze()
@@ -156,12 +160,12 @@ def main():
             for blob in blobs:
                 y, x, r = blob
                 cell_img = get_cell_image(x, y, r, img)
+
                 try:
-
                     label = classify_cell_image(cell_img, model)
-
                 except ValueError:
                     label = 1
+
                 if label == 1:
                     c = plt.Circle((x, y), r, color=color, linewidth=2, fill=False)
                 else:
@@ -169,9 +173,92 @@ def main():
                 ax[idx].add_patch(c)
             ax[idx].set_axis_off()
 
-        #break
         plt.tight_layout()
         plt.show()
+
+
+#  @profile
+def dog_blob_detection(image):
+    """
+    Difference of Gaussian Blob detection - Mere wrapper for profiler
+
+    :param np.ndarray image: grayscale image to analyze
+    :return: list of blobs [y, x, r]
+    """
+    blobs = blob_dog(image, min_sigma=5, max_sigma=40, overlap=1)
+    blobs[:, 2] = blobs[:, 2] * sqrt(2)
+
+    return blobs
+
+
+#  @profile
+def analyze_blobs(blobs, model, img):
+    """
+    Apply classification model to every blob
+
+    :param np.ndarray blobs: [nx3] array with blobs [y, x, r]
+    :param model: model used for classification
+    :param img: full image to crop input from
+    :return: list of labels
+    """
+    labels = []
+    for row in range(blobs.shape[0]):
+        y = blobs[row, 0]
+        x = blobs[row, 1]
+        r = blobs[row, 2]
+        cell_img = get_cell_image(x, y, r, img)
+
+        try:
+            label = classify_cell_image(cell_img, model)
+        except ValueError:
+            label = 1
+
+        labels.append(label)
+
+    return labels
+
+
+# @profile
+def analyse_image(path, model):
+    """
+    Loads images in path, apply different blob detection algorithms, classify detected blobs
+
+    :param str path: path to images that should be analyzed
+    :param model: PyTorch model to use for classification
+    """
+
+    images = get_images(path)
+    for image in images:
+        img = imread(path + image)
+        image_gray = rgb2gray(img)
+        image_gray = image_gray.squeeze()
+
+        image_gray_inverse = 255 - image_gray
+
+        start = timeit.default_timer()
+
+        blobs = dog_blob_detection(image_gray_inverse)
+        analyze_blobs(blobs, model, img)
+
+        end = timeit.default_timer()
+        print("It took %.3f s to analyze the picture" % (end-start))
+
+
+def main():
+    """
+    Demonstration of the combination of object detection and classification
+    """
+
+    path = "../data/Real_Application/"
+
+    model = load_model(path="./state_dicts/custom_cnn_e4_0.pt", tracing=True)
+    model_traced = load_model(path="./state_dicts/custom_cnn_e4_0.pt", tracing=True)
+
+    # Uncomment application to run
+
+    compare_blob_detection_algorithms(path, model)
+    # analyse_image(path, model)
+    # analyse_image(path, model_traced)
 
 
 if __name__ == "__main__":
