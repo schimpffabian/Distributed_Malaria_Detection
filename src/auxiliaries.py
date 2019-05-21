@@ -8,9 +8,8 @@ from torchvision import models
 from os import listdir
 from os.path import isfile, join
 import numpy as np
-import copy
 
-log_interval = 40
+log_interval = 3
 
 
 def set_parameter_requires_grad(model, feature_extracting):
@@ -89,8 +88,7 @@ def initialize_model(model_name, num_classes, feature_extract, use_pretrained=Tr
         input_size = 224
 
     elif model_name == "inception":
-        """ Inception v3
-        Be careful, expects (299,299) sized images and has auxiliary output
+        """ Inception v3, Be careful, expects (299,299) sized images and has auxiliary output
         """
         model_ft = models.inception_v3(pretrained=use_pretrained)
         set_parameter_requires_grad(model_ft, feature_extract)
@@ -126,7 +124,7 @@ def train(model, device, train_loader, optimizer, epoch, loss, federated=False, 
     for batch_idx, (data, target) in enumerate(train_loader):
         if federated:
             pass
-            #model_backup = copy.deepcopy(model)
+            # model_backup = copy.deepcopy(model)
         try:
             if federated:
                 model.send(data.location)
@@ -256,8 +254,8 @@ def create_test_img(
 ):
     """
     Creates randomly distributed bright dots on black background
-    
-    :param tuple size:        dimensions of test image
+
+    :param tuple size: dimensions of test image
     :param int num_points:  number of bright spots
     :param int radius_min:  minimum radius for bright spots
     :param int radius_max:  maximum radius for bright spots
@@ -271,6 +269,8 @@ def create_test_img(
     np.random.seed(random_seed)
 
     for point_nr in range(num_points):
+        if point_nr != 0 and point_nr % 1000 == 0:
+            print("Point %.0f added" % point_nr )
         center_0 = np.random.randint(low=0, high=int(test_img.shape[0]))
         center_1 = np.random.randint(low=0, high=int(test_img.shape[1]))
 

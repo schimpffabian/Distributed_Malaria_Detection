@@ -54,26 +54,34 @@ def main():
     """
     Compare runtimes
     """
-    num_runs = 16
+    real_blob = False
 
-    num_points = [10, 33, 100, 333]
+    num_runs = 18
+    num_points = [10, 33, 100, 333, 1000, 3333]
+    size = (400, 400)
+    name_extension = "_fake_big"
+
     time_build_kd = []
     time_query_kd = []
     time_naive_nn = []
     num_points_list = []
 
     for ii in range(num_runs):
-        print("Run %.0f" % ii)
         index = ii % (len(num_points))
         num_points_list.append(num_points[index])
+        print("Run %.0f : %.0f" % (ii, num_points[index]))
 
-        # Create test image
-        image, center_list, radius_list = create_test_img(
-            size=(200, 200), num_points=num_points[index], radius_min=3, radius_max=9, random_seed=ii
-        )
+        if real_blob:
+            # Create test image
+            image, center_list, radius_list = create_test_img(
+                size=size, num_points=num_points[index], radius_min=3, radius_max=9, random_seed=ii
+            )
 
-        # Run LoG
-        blobs_log = blob_log(image, min_sigma=1, max_sigma=3, num_sigma=3, overlap=1)
+            # Run LoG
+            blobs_log = blob_log(image, min_sigma=1, max_sigma=3, num_sigma=3, overlap=1)
+        else:
+            center_list = np.random.rand((num_points[index]), 2)
+            blobs_log = np.random.rand((num_points[index]), 2)
 
         # Build Kd Tree
         start = timeit.default_timer()
@@ -93,10 +101,10 @@ def main():
         stop = timeit.default_timer()
         time_naive_nn.append(stop - start)
 
-    # Save results
-    save_list = np.array([num_points_list, time_build_kd, time_query_kd, time_naive_nn]).T
-    np.savetxt(Path("../logs/speedup_kd_tree.csv"), save_list, delimiter=",",
-               header=",num_points,time_build_kd,time_query_kd,time_naive_nn")
+        # Save results
+        save_list = np.array([num_points_list, time_build_kd, time_query_kd, time_naive_nn]).T
+        np.savetxt(Path("../logs/speedup_kd_tree"+ name_extension +".csv"), save_list, delimiter=",",
+                   header=",num_points,time_build_kd,time_query_kd,time_naive_nn")
 
 
 if __name__ == "__main__":

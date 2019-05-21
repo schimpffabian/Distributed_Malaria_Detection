@@ -65,7 +65,7 @@ def get_data_augmentation(random_background, img_size, dark_background=True):
             ]
         )
     else:
-        NotImplementedError
+        raise NotImplementedError
 
     return data_augmentation
 

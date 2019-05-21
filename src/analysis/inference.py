@@ -38,10 +38,9 @@ def main():
             else:
                 tracing_gpu.append(data[ii, 2])
 
-    for index, matrix in enumerate([cpu, tracing_cpu, gpu, tracing_gpu]):
+    for matrix in [cpu, tracing_cpu, gpu, tracing_gpu]:
         mean_list.append(np.mean(matrix))
         std_list.append(np.std(matrix))
-        # plt.bar(index, np.mean(matrix), width, yerr=np.std(matrix), label=labels[index])
 
     # Uniform plotting
     ind = np.arange(4)

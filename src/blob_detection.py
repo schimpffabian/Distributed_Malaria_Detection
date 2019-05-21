@@ -9,7 +9,7 @@ try:
     from src.models.Custom_CNN import Simple_CNN_e2
     from src.auxiliaries import get_images, rgb2gray
 except ModuleNotFoundError:
-    from models.Custom_CNN import Simple_CNN
+    from models.Custom_CNN import Simple_CNN_e2
     from auxiliaries import get_images, rgb2gray
 import torch
 from torch.jit import trace

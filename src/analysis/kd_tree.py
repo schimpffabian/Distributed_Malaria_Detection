@@ -11,7 +11,9 @@ def main():
     width = 0.5
 
     # Load data
-    data = np.genfromtxt("../logs/speedup_kd_tree.csv", delimiter=",", skip_header=1)
+    # data = np.genfromtxt("../logs/speedup_kd_tree.csv", delimiter=",", skip_header=1)
+    data = np.genfromtxt("../logs/speedup_kd_tree_fake_big.csv", delimiter=",", skip_header=1)
+
     data = data[data[:, 0].argsort()]
 
     # Get unique values
@@ -30,6 +32,8 @@ def main():
     std_naive = []
 
     fig, ax = plt.subplots()
+    del fig
+
     for unique_val in unique_values:
         indices = list(np.where(data[:, 0] == unique_val)[0])
         selected_slice = data[indices, :]
@@ -56,13 +60,13 @@ def main():
 
     plt.xticks(ind, ticks)
     ax.set_yscale('log')
-    plt.ylim((10**(-5), 1))
+    plt.ylim((10**(-5), 100))
     plt.ylabel("Time [s]")
     plt.xlabel("Length of lists")
     plt.legend()
     plt.grid()
+    plt.tight_layout()
     plt.show()
-
 
 
 if __name__ == "__main__":

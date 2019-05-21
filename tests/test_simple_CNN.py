@@ -1,5 +1,5 @@
 import torch.nn as nn
-from src.models.Custom_CNN import Simple_CNN
+from src.models.Custom_CNN import Simple_CNN_e2
 import torch
 import torch.utils.data as utils
 import pytest
@@ -21,7 +21,8 @@ def model():
     """
     use_cuda = torch.cuda.is_available()
     device = torch.device("cuda" if use_cuda else "cpu")
-    return Simple_CNN().float().to(device)
+    # device = torch.device("cpu")
+    return Simple_CNN_e2(128).float().to(device)
 
 
 @pytest.fixture()
@@ -48,7 +49,10 @@ def batch():
 
     :return:
     """
-    img_size = 48
+    use_cuda = torch.cuda.is_available()
+    device = torch.device("cuda" if use_cuda else "cpu")
+
+    img_size = 128
 
     # Dummy Dataloader
     dataset = utils.TensorDataset(
@@ -57,7 +61,7 @@ def batch():
     dataloader = utils.DataLoader(dataset, batch_size=42, shuffle=True)
 
     for batch_idx, (data, target) in enumerate(dataloader):
-        batch = [data, target]
+        batch = [data.to(device), target.to(device)]
         break
     return batch
 
@@ -70,7 +74,8 @@ def optim():
     """
     use_cuda = torch.cuda.is_available()
     device = torch.device("cuda" if use_cuda else "cpu")
-    return torch.optim.Adam(Simple_CNN().float().to(device).parameters())
+    # device = torch.device("cpu")
+    return torch.optim.Adam(Simple_CNN_e2(128).float().to(device).parameters())
 
 
 def test_vars_change(model, loss, batch):
@@ -80,7 +85,10 @@ def test_vars_change(model, loss, batch):
     :param loss:
     :param batch:
     """
-    assert_vars_change(model, loss, torch.optim.Adam(model.parameters()), batch)
+    use_cuda = torch.cuda.is_available()
+    device = torch.device("cuda" if use_cuda else "cpu")
+    # device = torch.device("cpu")
+    assert_vars_change(model, loss, torch.optim.Adam(model.parameters()), batch, device=device)
 
 
 def test_nan_vals(model, loss_fn, batch, optim):

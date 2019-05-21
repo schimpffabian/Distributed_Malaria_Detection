@@ -9,11 +9,16 @@ def main():
     matplotlib.rcParams.update(params)
 
     # Define labels and colors
+    """
     labels = ["Adam \tlr=1e-3",
               "SGD  \tlr=1e-3",
               "SGD  \tlr=1e-1"]
+    """
+    labels = ["SGD \tlr=0.5",
+              "SGD  \tlr=1e-1",
+              "SGD  \tlr=1e-2"]
 
-    colors = ["g", "b", "k"]
+    colors = ["g", "b", "r"]
 
     # Define lists for plotting
     optimizer = []
@@ -25,7 +30,7 @@ def main():
     accuracy_temp = []
 
     # Load data
-    data = np.genfromtxt("../logs/optimizer_acc_log_2.csv", delimiter=",", skip_header=1)
+    data = np.genfromtxt("../logs/optimizer_acc_log_3.csv", delimiter=",", skip_header=1)
     first = True
 
     # separate different runs with different optimizers
@@ -52,17 +57,21 @@ def main():
     accuracies.append(accuracy_temp)
 
     # plot
+    used_labels = []
     for index in range(len(optimizer)):
-        plt.plot(epochs[index], accuracies[index], colors[optimizer[index]], label=labels[optimizer[index]])
+        if labels[optimizer[index]] in used_labels:
+            plt.plot(epochs[index], accuracies[index], colors[optimizer[index]])
+        else:
+            plt.plot(epochs[index], accuracies[index], colors[optimizer[index]], label=labels[optimizer[index]])
+            used_labels.append(labels[optimizer[index]])
 
     plt.legend()
     plt.grid()
-    plt.xlim((0, 50))
+    plt.xlim((0, 100))
     plt.xlabel("Epoch")
     plt.ylabel("Accuracy")
+    plt.tight_layout()
     plt.show()
-
-
 
 if __name__ == "__main__":
     main()
