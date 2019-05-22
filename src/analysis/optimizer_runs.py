@@ -69,7 +69,7 @@ def main():
     plt.grid()
     plt.xlim((0, 100))
     plt.xlabel("Epoch")
-    plt.ylabel("Accuracy")
+    plt.ylabel("Accuracy [\%]")
     plt.tight_layout()
     plt.show()
 

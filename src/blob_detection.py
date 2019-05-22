@@ -223,32 +223,6 @@ def analyze_blobs(blobs, model, img):
     return labels
 
 
-def analyze_blobs(blobs, model, img):
-    """
-    Apply classification model to every blob
-
-    :param np.ndarray blobs: [nx3] array with blobs [y, x, r]
-    :param model: model used for classification
-    :param img: full image to crop input from
-    :return: list of labels
-    """
-    labels = []
-    for row in range(blobs.shape[0]):
-        y = blobs[row, 0]
-        x = blobs[row, 1]
-        r = blobs[row, 2]
-        cell_img = get_cell_image(x, y, r, img)
-
-        try:
-            label = classify_cell_image(cell_img, model)
-        except ValueError:
-            label = 1
-
-        labels.append(label)
-
-    return labels
-
-
 # @profile
 def analyse_image(path, model):
     """

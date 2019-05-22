@@ -8,6 +8,12 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/2fasc/Distributed_Malaria_Detection/badge.svg)](https://snyk.io/test/github/2fasc/Distributed_Malaria_Detection) 
 
 # Distributed_Malaria
-*   GPU accelerated object detection algorithms (LoG and possibly DoG) 
 *   Federated Learning
 *   Object classification
+
+
+| Folder     | Description |
+| ----------:| -----------:|
+| analysis/  | scripts to analyse log files |
+| benchmarks/| scripts to create logs of different benchmarks |
+| scratch/   | scripts that still need some work  |

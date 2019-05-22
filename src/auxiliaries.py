@@ -243,7 +243,7 @@ def rgb2gray(rgb):
     Converts RGB images to black and white
 
     :param ndarray rgb: RGB image - shape: (n, m, 3)
-    :return: image - shape: (n, m, 3)
+    :return: image - shape: (n, m, 1)
     """
     transform_factor = np.array([0.2989, 0.5870, 0.1140]).reshape((3, 1))
     return rgb @ transform_factor

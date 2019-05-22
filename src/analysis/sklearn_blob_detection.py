@@ -9,7 +9,7 @@ def main():
     Simple analysis script to plot True Positive and Detection Rate over Time
     """
     # Set plotting parameters
-    params['figure.figsize'] = [9, 4]
+    params['figure.figsize'] = [8, 5]
     matplotlib.rcParams.update(params)
 
     # different algorithms
@@ -17,7 +17,7 @@ def main():
     label_list = ["Laplassian of Gaussian",
                   "Difference of Gaussian",
                   "Difference of Hessian",
-                  "OpenCV Simple Blob Detector"]
+                  "OpenCV SBD"]
     colors = ["b", "g", "y", "m"]
 
     # Create lists to store results for plotting
@@ -48,17 +48,21 @@ def main():
         detected_centers_mean = np.mean(detected_centers)
         detected_centers_std = np.std(detected_centers)
 
-        ax1 = plt.subplot(1, 2, 1)
+        ax1 = plt.subplot(2, 1, 1)
+        box1 = ax1.get_position()
+        ax1.set_position([box1.x0, box1.y0, box1.width * 0.9, box1.height])
         ax1.set_xscale("log", nonposx='clip')
         plt.plot(time_mean[index], true_pos_mean, "o"+colors[index], label=label_list[index], )
         plt.errorbar(time_mean[index], true_pos_mean, yerr=true_pos_std, xerr=time_std[index], color=colors[index] )
-        ax1.legend()
+        #ax1.legend()
 
-        ax2 = plt.subplot(1, 2, 2)
+        ax2 = plt.subplot(2, 1, 2)
+        box2 = ax2.get_position()
+        ax2.set_position([box2.x0, box2.y0, box2.width * 0.9, box2.height])
         ax2.set_xscale("log", nonposx='clip')
         plt.plot(time_mean[index], detected_centers_mean, "o"+colors[index], label=label_list[index])
         plt.errorbar(time_mean[index], detected_centers_mean,  yerr=detected_centers_std, xerr=time_std[index], color=colors[index])
-        ax2.legend()
+        ax2.legend(loc='center left', bbox_to_anchor=(1, 1.15))
 
     ax1.grid()
     ax1.set_ylabel('True Positive Rate')

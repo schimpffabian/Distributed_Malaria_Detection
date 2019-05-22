@@ -145,7 +145,7 @@ def pt_log(img, min_sigma=5, max_sigma=5, num_sigma=1, exclude_borders=True):
 # https://discuss.pytorch.org/t/changing-the-weights-of-conv2d/22992/14
 def benchmark_log(num_runs=1):
     """
-    Compare different implementations
+    Compare different LoG from Sklearn with PyTorch implementation
 
     :param int num_runs: number of runs
     """
@@ -154,7 +154,7 @@ def benchmark_log(num_runs=1):
     time_sk_log = 0
 
     for ii in range(num_runs):
-        test_img, bla, blub = create_test_img(size=(10, 10), num_points=4)
+        test_img, bla, blub = create_test_img(size=(100, 100), num_points=4)
 
         fig, axes = plt.subplots(3, 1, figsize=(3, 3))
         ax = axes.ravel()
