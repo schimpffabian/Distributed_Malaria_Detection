@@ -35,8 +35,6 @@ def main():
         # Eval accuracy
         results = []
         for batch_id, (data, target) in enumerate(test_loader):
-            num_samples = len(target)
-
             data = data.view((-1, img_size, img_size, 3))
 
             data_test = data.detach().cpu().numpy()

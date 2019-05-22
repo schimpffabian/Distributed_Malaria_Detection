@@ -157,6 +157,7 @@ def compare_blob_detection_algorithms(path, model):
         sequence = create_blob_sequence(image_gray_inverse)
 
         fig, axes = plt.subplots(1, 3, figsize=(9, 3), sharex=True, sharey=True)
+        del fig
         ax = axes.ravel()
 
         for idx, (blobs, color, title) in enumerate(sequence):
@@ -262,7 +263,7 @@ def main():
     # Uncomment application to run
 
     # compare_blob_detection_algorithms(path, model)
-    # analyse_image(path, model)
+    analyse_image(path, model)
     profile_analyse_image()
     # analyse_image(path, model_traced)
 

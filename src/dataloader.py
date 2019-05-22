@@ -208,7 +208,7 @@ def create_dataloaders(
 
     # Create dataloaders and set probability of classes in each dataset
     dataloaders = []
-    for ii, dataset in enumerate(split_datasets):
+    for dataset in split_datasets:
         dataloaders.append(
             torch.utils.data.DataLoader(
                 dataset=dataset,

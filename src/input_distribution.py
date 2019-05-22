@@ -28,6 +28,7 @@ def create_histogram(path, randomize_background):
     train_loader, test_loader, validation_loader = create_dataloaders(batch_size, img_size=img_size,
                                                                       random_background=randomize_background)
     del validation_loader
+    del test_loader
 
     num_run = 0
     bin_counts_cum = None

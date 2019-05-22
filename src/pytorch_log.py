@@ -42,11 +42,10 @@ def log_kernel(
         kernel_sum.append(0)
         for x_idx, x in enumerate(x_vec.tolist()):
             for y_idx, y in enumerate(y_vec.tolist()):
-                """ Old kernel
-                kernel[sigma_idx, y_idx, x_idx] = - (1 - (x**2 + y**2) / (2 * sigma**2)) / \
-                                                  (np.pi * sigma**2) * \
-                                                  np.exp(- (x**2 + y**2) / (2 * sigma**2))
-                """
+                # Old kernel
+                # kernel[sigma_idx, y_idx, x_idx] = - (1 - (x**2 + y**2) / (2 * sigma**2)) / \
+                #                                   (np.pi * sigma**2) * \
+                #                                   np.exp(- (x**2 + y**2) / (2 * sigma**2))
 
                 kernel[sigma_idx, x_idx, y_idx] = (
                     (x ** 2 + y ** 2 - 2 * sigma ** 2)
@@ -154,9 +153,12 @@ def benchmark_log(num_runs=1):
     time_sk_log = 0
 
     for ii in range(num_runs):
-        test_img, bla, blub = create_test_img(size=(100, 100), num_points=4)
+        test_img, center_list, radius_list = create_test_img(size=(100, 100), num_points=4)
+        del center_list
+        del radius_list
 
         fig, axes = plt.subplots(3, 1, figsize=(3, 3))
+        del fig
         ax = axes.ravel()
         ax[0].imshow(test_img)
         ax[1].imshow(test_img)

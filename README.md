@@ -7,13 +7,13 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/807112c33dc24c60a314411feabf8ef9)](https://www.codacy.com/app/2fasc/Distributed_Malaria_Detection?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=2fasc/Distributed_Malaria_Detection&amp;utm_campaign=Badge_Grade)
 [![Known Vulnerabilities](https://snyk.io/test/github/2fasc/Distributed_Malaria_Detection/badge.svg)](https://snyk.io/test/github/2fasc/Distributed_Malaria_Detection) 
 
-# Distributed_Malaria
+# Distributed Malaria Detection with PyTorch and PySyft
 *   Federated Learning
 *   Object classification
 
 
-| Folder     | Description |
-| ----------:| -----------:|
-| analysis/  | scripts to analyse log files |
-| benchmarks/| scripts to create logs of different benchmarks |
-| scratch/   | scripts that still need some work  |
+| Folder      | Description                                    |
+|-------------|------------------------------------------------|
+| analysis/   | scripts to analyse log files                   |
+| benchmarks/ | scripts to create logs of different benchmarks |
+| scratch/    | scripts that still need some work              |

@@ -8,7 +8,6 @@ from src.dataloader import create_dataset, split_dataset, get_data_augmentation,
 from src.models.Custom_CNN import Simple_CNN_e2
 from src.auxiliaries import run_t, train
 import syft as sy
-import timeit
 from pathlib import Path
 
 
