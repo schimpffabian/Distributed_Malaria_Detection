@@ -72,6 +72,7 @@ def get_cell_image(x, y, r, img):
 def create_blob_sequence(image):
     """
     Apply multiple blob detection algorithms to compare them
+    
     :param image: image to be analysed
     :return: squenece containing the blobs, colors and titles
     """
@@ -86,11 +87,11 @@ def create_blob_sequence(image):
     blobs_doh = blob_doh(image, min_sigma=5, max_sigma=40, overlap=1)
 
     blobs_list = [blobs_log, blobs_dog, blobs_doh]
-    colors = ["yellow", "green", "black"]
+    colors = ["yellow", "green", "black", "blue"]
     titles = [
         "Laplacian of Gaussian",
         "Difference of Gaussian",
-        "Determinant of Hessian",
+        "Determinant of Hessian"
     ]
     sequence = zip(blobs_list, colors, titles)
 
@@ -118,6 +119,7 @@ def classify_cell_image(cell_image, model, anti_aliasing=False):
 def load_model(path, tracing=False, img_size=128):
     """
     function to load a network for classification
+
     :param str path: state dicts of previous training
     :param bool tracing: turn tracing on or off
     :param int img_size: input size needed for model initialization
