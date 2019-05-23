@@ -25,7 +25,7 @@ def finetune_model(
     feature_extract=True,
     lr=1e-3,
     use_gpu=True,
-    name=""
+    name="",
 ):
     """
 
@@ -66,15 +66,20 @@ def finetune_model(
     else:
         save_name = Path(name + ".pt")
 
-    torch.save(
-        model.state_dict(),
-        save_name
-    )
+    torch.save(model.state_dict(), save_name)
     return accuracy
 
 
-def custom_classifier(model=Simple_CNN(img_size=128), batch_size=256, num_epochs=42, img_size=48, lr=1e-3, use_gpu=True,
-                      random_background=False, name=""):
+def custom_classifier(
+    model=Simple_CNN(img_size=128),
+    batch_size=256,
+    num_epochs=42,
+    img_size=48,
+    lr=1e-3,
+    use_gpu=True,
+    random_background=False,
+    name="",
+):
     """
 
     :param model:
@@ -109,14 +114,18 @@ def custom_classifier(model=Simple_CNN(img_size=128), batch_size=256, num_epochs
         background_extension = ""
 
     if name == "":
-        save_name = Path("./models/custom_cnn_e" + str(num_epochs) + "_size_" + str(img_size) + background_extension + ".pt")
+        save_name = Path(
+            "./models/custom_cnn_e"
+            + str(num_epochs)
+            + "_size_"
+            + str(img_size)
+            + background_extension
+            + ".pt"
+        )
     else:
         save_name = Path(name + ".pt")
 
-    torch.save(
-        model.state_dict(),
-        save_name,
-    )
+    torch.save(model.state_dict(), save_name)
 
     return accuracy
 

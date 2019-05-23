@@ -91,7 +91,7 @@ def create_blob_sequence(image):
     titles = [
         "Laplacian of Gaussian",
         "Difference of Gaussian",
-        "Determinant of Hessian"
+        "Determinant of Hessian",
     ]
     sequence = zip(blobs_list, colors, titles)
 
@@ -145,7 +145,7 @@ def compare_blob_detection_algorithms(path, model):
     :param model: PyTorch model to use for classification
     """
     # Plotting settings
-    params['figure.figsize'] = [8, 4]
+    params["figure.figsize"] = [8, 4]
     matplotlib.rcParams.update(params)
 
     images = get_images(path)
@@ -249,7 +249,7 @@ def analyse_image(path, model):
         analyze_blobs(blobs, model, img)
 
         end = timeit.default_timer()
-        print("It took %.3f s to analyze the picture" % (end-start))
+        print("It took %.3f s to analyze the picture" % (end - start))
 
 
 def main():

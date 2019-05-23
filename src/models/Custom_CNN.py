@@ -194,11 +194,11 @@ class Simple_CNN_e2(nn.Module):
         return F.log_softmax(x, dim=1)
 
 
-
 class Simple_CNN2(nn.Module):
     """
     Simple Network that is compatible with PySyft hooks at the time this is written
     """
+
     def __init__(self, img_size, num_neurons=500, num_layers=4):
         super(Simple_CNN2, self).__init__()
         self.img_size = img_size

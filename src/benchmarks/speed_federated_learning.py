@@ -23,7 +23,7 @@ class Net(nn.Module):
         super(Net, self).__init__()
         self.conv1 = nn.Conv2d(1, 20, 5, 1)
         self.conv2 = nn.Conv2d(20, 50, 5, 1)
-        self.fc1 = nn.Linear(4*4*50, 500)
+        self.fc1 = nn.Linear(4 * 4 * 50, 500)
         self.fc2 = nn.Linear(500, 10)
 
     def forward(self, x):
@@ -31,13 +31,13 @@ class Net(nn.Module):
         x = F.max_pool2d(x, 2, 2)
         x = F.relu(self.conv2(x))
         x = F.max_pool2d(x, 2, 2)
-        x = x.view(-1, 4*4*50)
+        x = x.view(-1, 4 * 4 * 50)
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
         return F.log_softmax(x, dim=1)
 
 
-class Arguments():
+class Arguments:
     def __init__(self):
         self.batch_size = 1024
         self.test_batch_size = 1000
@@ -77,9 +77,15 @@ def train(args, model, device, federated_train_loader, optimizer, epoch, federat
         if batch_idx % args.log_interval == 0:
             if federate:
                 loss = loss.get()
-            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                epoch, batch_idx * args.batch_size, len(federated_train_loader) * args.batch_size,
-                100. * batch_idx / len(federated_train_loader), loss.item()))
+            print(
+                "Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}".format(
+                    epoch,
+                    batch_idx * args.batch_size,
+                    len(federated_train_loader) * args.batch_size,
+                    100.0 * batch_idx / len(federated_train_loader),
+                    loss.item(),
+                )
+            )
 
 
 def mnist(federate):
@@ -87,34 +93,47 @@ def mnist(federate):
     use_cuda = False
     # torch.manual_seed(args.seed)
     device = torch.device("cpu")
-    kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
+    kwargs = {"num_workers": 1, "pin_memory": True} if use_cuda else {}
 
     model = Net().to(device)
-    optimizer = optim.SGD(model.parameters(), lr=args.lr)  # TODO momentum is not supported at the moment
+    optimizer = optim.SGD(
+        model.parameters(), lr=args.lr
+    )  # TODO momentum is not supported at the moment
 
     if federate:
         train_loader = sy.FederatedDataLoader(
-            datasets.MNIST(Path('../../data'), train=True, download=True,
-                           transform=transforms.Compose([
-                               transforms.ToTensor(),
-                               transforms.Normalize((0.1307,), (0.3081,))
-                           ]))
-                .federate((bob, alice)),
-            batch_size=args.batch_size, shuffle=True, **kwargs)
+            datasets.MNIST(
+                Path("../../data"),
+                train=True,
+                download=True,
+                transform=transforms.Compose(
+                    [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
+                ),
+            ).federate((bob, alice)),
+            batch_size=args.batch_size,
+            shuffle=True,
+            **kwargs
+        )
 
     else:
         train_loader = torch.utils.data.DataLoader(
-            datasets.MNIST(Path('../../data'), train=False, transform=transforms.Compose([
-                transforms.ToTensor(),
-                transforms.Normalize((0.1307,), (0.3081,))
-            ])),
-            batch_size=args.test_batch_size, shuffle=True, **kwargs)
+            datasets.MNIST(
+                Path("../../data"),
+                train=False,
+                transform=transforms.Compose(
+                    [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
+                ),
+            ),
+            batch_size=args.test_batch_size,
+            shuffle=True,
+            **kwargs
+        )
 
     start = timeit.default_timer()
     for epoch in range(1, args.epochs + 1):
         train(args, model, device, train_loader, optimizer, epoch, federate)
     end = timeit.default_timer()
-    return end-start
+    return end - start
 
 
 def malaria(federate, num_worker=2):
@@ -130,7 +149,7 @@ def malaria(federate, num_worker=2):
     use_cuda = False  # not args.no_cuda and torch.cuda.is_available()
     # torch.manual_seed(args.seed)
     device = torch.device("cpu")
-    kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
+    kwargs = {"num_workers": 1, "pin_memory": True} if use_cuda else {}
 
     model = Simple_CNN_e2(128).to(device)
     optimizer = optim.SGD(model.parameters(), lr=args.lr)
@@ -148,11 +167,16 @@ def malaria(federate, num_worker=2):
         else:
             raise NotImplementedError
 
-        train_loader = sy.FederatedDataLoader(train_dataset.federate(workers),
-                                              batch_size=args.batch_size, shuffle=True, **kwargs)
+        train_loader = sy.FederatedDataLoader(
+            train_dataset.federate(workers),
+            batch_size=args.batch_size,
+            shuffle=True,
+            **kwargs
+        )
     else:
-        train_loader = torch.utils.data.DataLoader(train_dataset,
-            batch_size=args.batch_size, shuffle=True, **kwargs)
+        train_loader = torch.utils.data.DataLoader(
+            train_dataset, batch_size=args.batch_size, shuffle=True, **kwargs
+        )
 
     # Train cycles
     start = timeit.default_timer()
@@ -160,7 +184,7 @@ def malaria(federate, num_worker=2):
         train(args, model, device, train_loader, optimizer, epoch, federate)
     end = timeit.default_timer()
 
-    return end-start
+    return end - start
 
 
 def eval_mnist():
@@ -174,8 +198,12 @@ def eval_mnist():
             duration = mnist(federate)
             results.append([federate, duration])
 
-            np.savetxt(Path("../logs/federated_mnist.csv"), results, delimiter=",",
-                       header="federated, time")
+            np.savetxt(
+                Path("../logs/federated_mnist.csv"),
+                results,
+                delimiter=",",
+                header="federated, time",
+            )
 
 
 def eval_malaria_00():
@@ -189,8 +217,12 @@ def eval_malaria_00():
             duration = malaria(federate)
             results.append([federate, duration])
 
-            np.savetxt(Path("../logs/federated_malaria_runtime.csv"), results, delimiter=",",
-                       header="federated, time")
+            np.savetxt(
+                Path("../logs/federated_malaria_runtime.csv"),
+                results,
+                delimiter=",",
+                header="federated, time",
+            )
 
 
 def eval_malaria_01():
@@ -205,8 +237,12 @@ def eval_malaria_01():
             duration = malaria(federate, num_worker=num_worker)
             results.append([num_worker, duration])
 
-            np.savetxt(Path("../logs/federated_malaria_runtime_multiple_workers.csv"), results, delimiter=",",
-                       header="num_worker, time")
+            np.savetxt(
+                Path("../logs/federated_malaria_runtime_multiple_workers.csv"),
+                results,
+                delimiter=",",
+                header="num_worker, time",
+            )
 
 
 if __name__ == "__main__":

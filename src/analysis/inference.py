@@ -6,12 +6,14 @@ from src.analysis.plot_config import params
 
 def main():
     # Set plotting parameters
-    params['figure.figsize'] = [9, 4]
+    params["figure.figsize"] = [9, 4]
     matplotlib.rcParams.update(params)
     width = 0.5
 
     # Load data
-    data = np.genfromtxt("../logs/inference_speedup_squeezenet.csv", skip_header=1, delimiter=",")
+    data = np.genfromtxt(
+        "../logs/inference_speedup_squeezenet.csv", skip_header=1, delimiter=","
+    )
     # data = np.genfromtxt("../logs/inference_speedup_custom_e2.csv", skip_header=1, delimiter=",")
     # Define lists for later plotting
     tracing_gpu = []
@@ -49,7 +51,7 @@ def main():
     plt.xticks(ind, labels)
     plt.ylabel("Inference time [s]")
 
-    #plt.legend()
+    # plt.legend()
     plt.grid()
     plt.tight_layout()
     plt.show()

@@ -4,7 +4,12 @@ import torch.nn as nn
 import os
 import numpy as np
 from torch.utils.data import Dataset
-from src.dataloader import create_dataset, split_dataset, get_data_augmentation, set_prop_dataset
+from src.dataloader import (
+    create_dataset,
+    split_dataset,
+    get_data_augmentation,
+    set_prop_dataset,
+)
 from src.models.Custom_CNN import Simple_CNN_e2
 from src.auxiliaries import run_t, train
 import syft as sy
@@ -49,9 +54,7 @@ class DatasetFromSubset(Dataset):
             print(type(indices))
             raise NotImplementedError
 
-        targets_subset = torch.tensor(
-            [targets[ii] for ii in indices]
-        )
+        targets_subset = torch.tensor([targets[ii] for ii in indices])
 
         # Empty definition
         concat_tensor = None
@@ -72,7 +75,7 @@ def create_federated_dataset(
     path=os.path.dirname(os.path.abspath(__file__)) + "/../data/Classification",
     img_size=128,
     percentage_of_dataset=np.array([0.75, 0.25]),
-    balance=np.array([[0.5, 0.5], [0.5, 0.5]])
+    balance=np.array([[0.5, 0.5], [0.5, 0.5]]),
 ):
     """
     Helper function to create datasets that can be used for federated learning
@@ -84,7 +87,9 @@ def create_federated_dataset(
     :return: split datasets - subsets
     """
 
-    data_augmentation = get_data_augmentation(random_background=False, img_size=img_size)
+    data_augmentation = get_data_augmentation(
+        random_background=False, img_size=img_size
+    )
     dataset = create_dataset(path=path, data_augmentation=data_augmentation)
 
     targets = dataset.targets
@@ -116,8 +121,12 @@ def imbalanced_distribution():
         percentage = [0.4, 0.4, 0.2]
 
         # Create datasets and dataloaders
-        train_worker_kh, train_worker_fikli, test_set = create_federated_dataset(balance=balance, percentage_of_dataset=percentage)
-        test_loader = torch.utils.data.DataLoader(test_set, batch_size=1024, shuffle=True)
+        train_worker_kh, train_worker_fikli, test_set = create_federated_dataset(
+            balance=balance, percentage_of_dataset=percentage
+        )
+        test_loader = torch.utils.data.DataLoader(
+            test_set, batch_size=1024, shuffle=True
+        )
 
         # Create datasets
         train_dataset_kh = DatasetFromSubset(train_worker_kh)
@@ -146,26 +155,28 @@ def imbalanced_distribution():
             model = model.float()
 
             # Setup optimization
-            device = "cpu"  # device = torch.device("cuda" if use_cuda else "cpu") GPU not fully supported
-            optimizer = optim.SGD(model.parameters(), lr=1e-1)  # optimizer = optim.Adam(model.parameters(), lr=1e-3)
+            device = (
+                "cpu"
+            )  # device = torch.device("cuda" if use_cuda else "cpu") GPU not fully supported
+            optimizer = optim.SGD(
+                model.parameters(), lr=1e-1
+            )  # optimizer = optim.Adam(model.parameters(), lr=1e-3)
             loss = nn.CrossEntropyLoss()
 
             for epoch in range(1, epochs + 1):
                 train(
-                    model,
-                    device,
-                    train_loader,
-                    optimizer,
-                    epoch,
-                    loss,
-                    federated=True,
+                    model, device, train_loader, optimizer, epoch, loss, federated=True
                 )
                 accuracy = run_t(model, device, test_loader, loss)
 
                 results.append([ii, identifier, epoch, accuracy])
 
-            np.savetxt(Path("./logs/federated_learning_speed_distribution.csv"), results, delimiter=",",
-                       header="run, identifier, epoch, accuracy")
+            np.savetxt(
+                Path("./logs/federated_learning_speed_distribution.csv"),
+                results,
+                delimiter=",",
+                header="run, identifier, epoch, accuracy",
+            )
 
 
 if __name__ == "__main__":

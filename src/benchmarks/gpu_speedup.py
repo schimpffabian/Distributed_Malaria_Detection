@@ -11,6 +11,7 @@ sys.path.append(os.path.join("..", ".."))
 
 from src.train_model import custom_classifier
 from src.train_model import finetune_model
+
 # from src.models.Custom_CNN import Simple_CNN_e1
 from src.models.Custom_CNN import Simple_CNN_e2
 
@@ -35,32 +36,40 @@ def gpu_speedup_custom():
 
                         name = "../state_dicts/custom_cnn_e4_" + str(int(counter))
 
-                        accuracy = custom_classifier(Simple_CNN_e2(img_size=img_size),
-                                                     num_epochs=num_epochs,
-                                                     batch_size=batch_size,
-                                                     use_gpu=gpu_used,
-                                                     img_size=img_size,
-                                                     random_background=random_background,
-                                                     name=name)
+                        accuracy = custom_classifier(
+                            Simple_CNN_e2(img_size=img_size),
+                            num_epochs=num_epochs,
+                            batch_size=batch_size,
+                            use_gpu=gpu_used,
+                            img_size=img_size,
+                            random_background=random_background,
+                            name=name,
+                        )
 
                         end = timeit.default_timer()
 
-                        results.append([counter,
-                                        batch_size,
-                                        img_size,
-                                        random_background,
-                                        gpu_used,
-                                        ii,
-                                        end-start,
-                                        accuracy])
+                        results.append(
+                            [
+                                counter,
+                                batch_size,
+                                img_size,
+                                random_background,
+                                gpu_used,
+                                ii,
+                                end - start,
+                                accuracy,
+                            ]
+                        )
 
                         counter += 1
 
                         # Log results
-                        np.savetxt(Path("../logs/results_experiment_4.csv"),
-                                   np.array(results),
-                                   delimiter=",",
-                                   header=header)
+                        np.savetxt(
+                            Path("../logs/results_experiment_4.csv"),
+                            np.array(results),
+                            delimiter=",",
+                            header=header,
+                        )
 
 
 def gpu_speedup_pretrained():
@@ -82,28 +91,34 @@ def gpu_speedup_pretrained():
 
                         name = "../state_dicts/squeezenet_e5_" + str(int(counter))
 
-                        accuracy = finetune_model(batch_size=batch_size,
-                                                  num_epochs=3,
-                                                  use_gpu=gpu_used)
+                        accuracy = finetune_model(
+                            batch_size=batch_size, num_epochs=3, use_gpu=gpu_used
+                        )
 
                         end = timeit.default_timer()
 
-                        results.append([counter,
-                                        batch_size,
-                                        img_size,
-                                        random_background,
-                                        gpu_used,
-                                        ii,
-                                        end-start,
-                                        accuracy])
+                        results.append(
+                            [
+                                counter,
+                                batch_size,
+                                img_size,
+                                random_background,
+                                gpu_used,
+                                ii,
+                                end - start,
+                                accuracy,
+                            ]
+                        )
 
                         counter += 1
 
                         # Log results
-                        np.savetxt(Path("../logs/results_experiment_5.csv"),
-                                   np.array(results),
-                                   delimiter=",",
-                                   header=header)
+                        np.savetxt(
+                            Path("../logs/results_experiment_5.csv"),
+                            np.array(results),
+                            delimiter=",",
+                            header=header,
+                        )
 
 
 if __name__ == "__main__":

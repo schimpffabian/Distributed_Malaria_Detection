@@ -215,7 +215,7 @@ def create_dataloaders(
                 batch_size=batchsize,
                 shuffle=True,
                 num_workers=num_workers,
-                pin_memory=True
+                pin_memory=True,
             )
         )
 

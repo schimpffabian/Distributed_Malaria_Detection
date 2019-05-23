@@ -22,11 +22,12 @@ def create_histogram(path, randomize_background):
     num_episodes = 1
     batch_size = 1
     img_size = 32
-    bins = int(256/2)
+    bins = int(256 / 2)
     torch.manual_seed(42)
 
-    train_loader, test_loader, validation_loader = create_dataloaders(batch_size, img_size=img_size,
-                                                                      random_background=randomize_background)
+    train_loader, test_loader, validation_loader = create_dataloaders(
+        batch_size, img_size=img_size, random_background=randomize_background
+    )
     del validation_loader
     del test_loader
 
@@ -53,7 +54,7 @@ def create_histogram(path, randomize_background):
             if num_run % 1000 == 0:
                 print(num_run)
 
-    normalized_hist = bin_counts_cum / num_run / (img_size*img_size)
+    normalized_hist = bin_counts_cum / num_run / (img_size * img_size)
     np.savetxt(Path(path), normalized_hist, delimiter=",")
 
 
@@ -67,7 +68,7 @@ def load_histogram(load_path):
     data = np.genfromtxt(Path(load_path))
 
     # Plotting settings
-    params['figure.figsize'] = [8, 4]
+    params["figure.figsize"] = [8, 4]
     matplotlib.rcParams.update(params)
     width = 0.5
 
@@ -76,7 +77,7 @@ def load_histogram(load_path):
     del fig
 
     # Plot
-    ind = np.arange(256/2)*2
+    ind = np.arange(256 / 2) * 2
     ax.bar(ind, data, width)
 
     # Refine plot
@@ -96,12 +97,12 @@ def compare_histograms(random_path, standard_path):
     :param standard_path:
     :return:
     """
-# Load data
+    # Load data
     random_data = np.genfromtxt(Path(random_path))
     standard_data = np.genfromtxt(Path(standard_path))
 
     # Plotting settings
-    params['figure.figsize'] = [8, 4]
+    params["figure.figsize"] = [8, 4]
     matplotlib.rcParams.update(params)
     width = 0.4
 
@@ -110,9 +111,9 @@ def compare_histograms(random_path, standard_path):
     del fig
 
     # Plot
-    ind = np.arange(256/2)*2
-    ax.bar(ind+0.2, random_data, width, label="Randomized background")
-    ax.bar(ind-0.2, standard_data, width, label="Standard background")
+    ind = np.arange(256 / 2) * 2
+    ax.bar(ind + 0.2, random_data, width, label="Randomized background")
+    ax.bar(ind - 0.2, standard_data, width, label="Standard background")
 
     # Refine plot
     plt.ylabel("Normalized probability")

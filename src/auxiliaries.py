@@ -107,7 +107,16 @@ def initialize_model(model_name, num_classes, feature_extract, use_pretrained=Tr
     return model_ft, input_size
 
 
-def train(model, device, train_loader, optimizer, epoch, loss, federated=False, random_background=False):
+def train(
+    model,
+    device,
+    train_loader,
+    optimizer,
+    epoch,
+    loss,
+    federated=False,
+    random_background=False,
+):
     """
     Training function for NNs
 
@@ -270,7 +279,7 @@ def create_test_img(
 
     for point_nr in range(num_points):
         if point_nr != 0 and point_nr % 1000 == 0:
-            print("Point %.0f added" % point_nr )
+            print("Point %.0f added" % point_nr)
         center_0 = np.random.randint(low=0, high=int(test_img.shape[0]))
         center_1 = np.random.randint(low=0, high=int(test_img.shape[1]))
 

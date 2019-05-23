@@ -31,7 +31,7 @@ def log_kernel(
     else:
         raise NotImplementedError(
             "Please choose between: \nlinear scaling \t-> \t True \nlog scaling \t-> \t False"
-            )
+        )
     # print(sigma_vec)
     x_vec = np.arange(kernel_size) - np.floor(kernel_size / 2)
     y_vec = np.arange(kernel_size) - np.floor(kernel_size / 2)
@@ -153,7 +153,9 @@ def benchmark_log(num_runs=1):
     time_sk_log = 0
 
     for ii in range(num_runs):
-        test_img, center_list, radius_list = create_test_img(size=(100, 100), num_points=4)
+        test_img, center_list, radius_list = create_test_img(
+            size=(100, 100), num_points=4
+        )
         del center_list
         del radius_list
 

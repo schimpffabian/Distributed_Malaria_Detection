@@ -5,7 +5,7 @@ from src.analysis.plot_config import params
 
 
 def main():
-    params['figure.figsize'] = [9, 4]
+    params["figure.figsize"] = [9, 4]
     matplotlib.rcParams.update(params)
 
     # Define labels and colors
@@ -14,9 +14,7 @@ def main():
               "SGD  \tlr=1e-3",
               "SGD  \tlr=1e-1"]
     """
-    labels = ["SGD \tlr=0.5",
-              "SGD  \tlr=1e-1",
-              "SGD  \tlr=1e-2"]
+    labels = ["SGD \tlr=0.5", "SGD  \tlr=1e-1", "SGD  \tlr=1e-2"]
 
     colors = ["g", "b", "r"]
 
@@ -30,7 +28,9 @@ def main():
     accuracy_temp = []
 
     # Load data
-    data = np.genfromtxt("../logs/optimizer_acc_log_3.csv", delimiter=",", skip_header=1)
+    data = np.genfromtxt(
+        "../logs/optimizer_acc_log_3.csv", delimiter=",", skip_header=1
+    )
     first = True
 
     # separate different runs with different optimizers
@@ -39,7 +39,7 @@ def main():
 
             if not first:
                 epochs.append(epoch_temp)
-                optimizer.append(int(data[ii-1, 0]))
+                optimizer.append(int(data[ii - 1, 0]))
                 accuracies.append(accuracy_temp)
 
             else:
@@ -62,7 +62,12 @@ def main():
         if labels[optimizer[index]] in used_labels:
             plt.plot(epochs[index], accuracies[index], colors[optimizer[index]])
         else:
-            plt.plot(epochs[index], accuracies[index], colors[optimizer[index]], label=labels[optimizer[index]])
+            plt.plot(
+                epochs[index],
+                accuracies[index],
+                colors[optimizer[index]],
+                label=labels[optimizer[index]],
+            )
             used_labels.append(labels[optimizer[index]])
 
     plt.legend()
@@ -72,6 +77,7 @@ def main():
     plt.ylabel("Accuracy [\%]")
     plt.tight_layout()
     plt.show()
+
 
 if __name__ == "__main__":
     main()

@@ -5,7 +5,7 @@ from src.analysis.plot_config import params
 
 
 def main():
-    params['figure.figsize'] = [8, 4]
+    params["figure.figsize"] = [8, 4]
     matplotlib.rcParams.update(params)
 
     # Define lists for plotting
@@ -25,16 +25,11 @@ def main():
     # Define labels and colors
     if name_str == "../logs/federated_learning_speed_distribution_yoda.csv":
         data = np.genfromtxt(name_str, delimiter=";", skip_header=1)
-        labels = ["50 / 50",
-                  "70 / 30",
-                  "90 / 10"
-                  ]
+        labels = ["50 / 50", "70 / 30", "90 / 10"]
         colors = ["b", "r", "g"]
 
     elif name_str == "../logs/federated_learning_speed_distribution_yoda2.csv":
-        labels = ["50 / 50",
-                  "60 / 40",
-                  ]
+        labels = ["50 / 50", "60 / 40"]
         colors = ["b", "r"]
     else:
         raise NotImplementedError
@@ -47,7 +42,7 @@ def main():
 
             if not first:
                 epochs.append(epoch_temp)
-                distribution.append(int(data[ii-1, 1]))
+                distribution.append(int(data[ii - 1, 1]))
                 accuracies.append(accuracy_temp)
 
             else:
@@ -70,7 +65,12 @@ def main():
         if labels[distribution[index]] in used_labels:
             plt.plot(epochs[index], accuracies[index], colors[distribution[index]])
         else:
-            plt.plot(epochs[index], accuracies[index], colors[distribution[index]], label=labels[distribution[index]])
+            plt.plot(
+                epochs[index],
+                accuracies[index],
+                colors[distribution[index]],
+                label=labels[distribution[index]],
+            )
             used_labels.append(labels[distribution[index]])
 
     plt.legend()

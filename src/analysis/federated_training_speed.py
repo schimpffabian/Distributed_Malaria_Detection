@@ -7,18 +7,29 @@ from src.analysis.plot_config import params
 
 def main():
     # Plotting settings
-    params['figure.figsize'] = [8, 4]
+    params["figure.figsize"] = [8, 4]
     matplotlib.rcParams.update(params)
     width = 0.5
-    labels = ["Regular", "Federated 2 worker", "Federated 3 worker", "Federated 4 worker"]
+    labels = [
+        "Regular",
+        "Federated 2 worker",
+        "Federated 3 worker",
+        "Federated 4 worker",
+    ]
 
     # Load data
-    regular_federated = np.genfromtxt(Path("../logs/federated_malaria_runtime.csv"), delimiter=",", skip_header=1)
-    multi_worker = np.genfromtxt(Path("../logs/federated_malaria_runtime_multiple_workers.csv"), delimiter=",", skip_header=1)
+    regular_federated = np.genfromtxt(
+        Path("../logs/federated_malaria_runtime.csv"), delimiter=",", skip_header=1
+    )
+    multi_worker = np.genfromtxt(
+        Path("../logs/federated_malaria_runtime_multiple_workers.csv"),
+        delimiter=",",
+        skip_header=1,
+    )
 
     # Create lists to store results
     regular = []
-    federated_2= []
+    federated_2 = []
     federated_3 = []
     federated_4 = []
 

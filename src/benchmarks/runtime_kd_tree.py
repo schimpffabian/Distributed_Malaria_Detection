@@ -47,7 +47,7 @@ def naive_knn(blob_list, center_list):
 
     for blob in blob_list:
         for center in center_list:
-            dist = np.linalg.norm(center-blob[0:2])
+            dist = np.linalg.norm(center - blob[0:2])
 
 
 def main():
@@ -74,11 +74,17 @@ def main():
         if real_blob:
             # Create test image
             image, center_list, radius_list = create_test_img(
-                size=size, num_points=num_points[index], radius_min=3, radius_max=9, random_seed=ii
+                size=size,
+                num_points=num_points[index],
+                radius_min=3,
+                radius_max=9,
+                random_seed=ii,
             )
 
             # Run LoG
-            blobs_log = blob_log(image, min_sigma=1, max_sigma=3, num_sigma=3, overlap=1)
+            blobs_log = blob_log(
+                image, min_sigma=1, max_sigma=3, num_sigma=3, overlap=1
+            )
         else:
             center_list = np.random.rand((num_points[index]), 2)
             blobs_log = np.random.rand((num_points[index]), 2)
@@ -87,7 +93,7 @@ def main():
         start = timeit.default_timer()
         kd_tree = build_kd_tree(center_list)
         stop = timeit.default_timer()
-        time_build_kd.append(stop-start)
+        time_build_kd.append(stop - start)
 
         # Run KD Tree
         start = timeit.default_timer()
@@ -102,9 +108,15 @@ def main():
         time_naive_nn.append(stop - start)
 
         # Save results
-        save_list = np.array([num_points_list, time_build_kd, time_query_kd, time_naive_nn]).T
-        np.savetxt(Path("../logs/speedup_kd_tree"+ name_extension +".csv"), save_list, delimiter=",",
-                   header=",num_points,time_build_kd,time_query_kd,time_naive_nn")
+        save_list = np.array(
+            [num_points_list, time_build_kd, time_query_kd, time_naive_nn]
+        ).T
+        np.savetxt(
+            Path("../logs/speedup_kd_tree" + name_extension + ".csv"),
+            save_list,
+            delimiter=",",
+            header=",num_points,time_build_kd,time_query_kd,time_naive_nn",
+        )
 
 
 if __name__ == "__main__":

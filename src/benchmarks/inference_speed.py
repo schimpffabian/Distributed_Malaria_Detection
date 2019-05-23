@@ -43,9 +43,9 @@ def benchmark_inference_custom_model():
 
             # Specify execution device
             if use_gpu:
-                device = torch.device('cuda')
+                device = torch.device("cuda")
             else:
-                device = torch.device('cpu')
+                device = torch.device("cpu")
 
             # Clone original model
             execution_model = copy.deepcopy(original_model)
@@ -69,9 +69,13 @@ def benchmark_inference_custom_model():
                     data = data.to(device)
                     prediction = execution_model(data)
                 end = timeit.default_timer()
-                results.append([use_gpu, use_tracing, (end-start)/num_runs])
-                np.savetxt(Path("../logs/inference_speedup_custom_e2.csv"), results, delimiter=",",
-                           header="use_gpu,use_tracing,duration")
+                results.append([use_gpu, use_tracing, (end - start) / num_runs])
+                np.savetxt(
+                    Path("../logs/inference_speedup_custom_e2.csv"),
+                    results,
+                    delimiter=",",
+                    header="use_gpu,use_tracing,duration",
+                )
 
 
 def benchmark_inference_squeezenet():
@@ -93,7 +97,6 @@ def benchmark_inference_squeezenet():
     )
     original_model.load_state_dict(torch.load(path))
 
-
     # get dataloader
     train_loader, test_loader, val_loader = create_dataloaders(
         batchsize=batch_size, img_size=img_size, random_background=random_background
@@ -106,9 +109,9 @@ def benchmark_inference_squeezenet():
 
             # Specify execution device
             if use_gpu:
-                device = torch.device('cuda')
+                device = torch.device("cuda")
             else:
-                device = torch.device('cpu')
+                device = torch.device("cpu")
 
             # Clone original model
             execution_model = copy.deepcopy(original_model)
@@ -118,7 +121,9 @@ def benchmark_inference_squeezenet():
                 for (data, target) in val_loader:
                     example_input = data
                     break
-                execution_model = trace(execution_model, example_inputs=example_input, check_trace=False)
+                execution_model = trace(
+                    execution_model, example_inputs=example_input, check_trace=False
+                )
 
                 if use_gpu:
                     execution_model.cuda()
@@ -132,9 +137,13 @@ def benchmark_inference_squeezenet():
                     data = data.to(device)
                     prediction = execution_model(data)
                 end = timeit.default_timer()
-                results.append([use_gpu, use_tracing, (end-start)/num_runs])
-                np.savetxt(Path("../logs/inference_speedup_squeezenet.csv"), results, delimiter=",",
-                           header="use_gpu,use_tracing,duration")
+                results.append([use_gpu, use_tracing, (end - start) / num_runs])
+                np.savetxt(
+                    Path("../logs/inference_speedup_squeezenet.csv"),
+                    results,
+                    delimiter=",",
+                    header="use_gpu,use_tracing,duration",
+                )
 
 
 if __name__ == "__main__":

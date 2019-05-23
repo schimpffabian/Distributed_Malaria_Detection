@@ -1,5 +1,6 @@
 import sys
 import os
+
 sys.path.append(os.path.join(".."))
 
 from src.dataloader import create_dataloaders
@@ -14,10 +15,14 @@ def main():
     batch_size = 2000
     img_size = 64
 
-    train_loader, test_loader, validation_loader = create_dataloaders(batch_size, img_size=img_size)
+    train_loader, test_loader, validation_loader = create_dataloaders(
+        batch_size, img_size=img_size
+    )
     del validation_loader
 
-    classifier = LogisticRegression(random_state=42, warm_start=True, solver="liblinear")
+    classifier = LogisticRegression(
+        random_state=42, warm_start=True, solver="liblinear"
+    )
 
     for episode in range(num_episodes):
         print("\nRun \t %.0f" % episode)

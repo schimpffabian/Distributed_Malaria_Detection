@@ -24,7 +24,9 @@ def compare_optimizers():
     train_set, test_set = create_federated_dataset()
     train_dataset = DatasetFromSubset(train_set)
 
-    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=1024, shuffle=True)
+    train_loader = torch.utils.data.DataLoader(
+        train_dataset, batch_size=1024, shuffle=True
+    )
     test_loader = torch.utils.data.DataLoader(test_set, batch_size=1024, shuffle=True)
 
     # Setup optimization
@@ -59,23 +61,25 @@ def compare_optimizers():
             start = timeit.default_timer()
             for epoch in range(1, epochs + 1):
                 train(
-                    model,
-                    device,
-                    train_loader,
-                    optimizer,
-                    epoch,
-                    loss,
-                    federated=False,
+                    model, device, train_loader, optimizer, epoch, loss, federated=False
                 )
                 accuracy = run_t(model, device, test_loader, loss)
                 results_acc.append([opt, run, epoch, accuracy])
-                np.savetxt(Path("../logs/optimizer_acc_log_3.csv"), results_acc, delimiter=",",
-                           header="optimizer, run, epoch, accuracy")
+                np.savetxt(
+                    Path("../logs/optimizer_acc_log_3.csv"),
+                    results_acc,
+                    delimiter=",",
+                    header="optimizer, run, epoch, accuracy",
+                )
 
             end = timeit.default_timer()
-            results_time.append([opt, run , end - start, accuracy])
-            np.savetxt(Path("../logs/optimizer_time_log_3.csv"), results_time, delimiter=",",
-                       header="optimizer, run, time, accuracy")
+            results_time.append([opt, run, end - start, accuracy])
+            np.savetxt(
+                Path("../logs/optimizer_time_log_3.csv"),
+                results_time,
+                delimiter=",",
+                header="optimizer, run, time, accuracy",
+            )
 
 
 if __name__ == "__main__":
