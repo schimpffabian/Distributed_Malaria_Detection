@@ -29,7 +29,7 @@ gitdb2==2.0.5
 GitPython==2.1.11
 identify==1.4.1
 idna==2.8
-imageio==2.5.0
+imageio==2.6.0
 imagesize==1.1.0
 importlib-metadata==0.9
 importlib-resources==1.0.2
