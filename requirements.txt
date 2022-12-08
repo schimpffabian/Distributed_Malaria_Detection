@@ -8,7 +8,7 @@ Babel==2.9.1
 backcall==0.1.0
 bandit==1.5.1
 black==19.3b0
-certifi==2019.3.9
+certifi==2022.12.7
 cffi==1.12.2
 cfgv==1.6.0
 chardet==3.0.4
